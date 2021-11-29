@@ -31,12 +31,31 @@ def sign_up():
         print(password1)
         print(password2)
         print(date)
-        if password1 != password2:
-            flash('Passwords must be equal',category='error')
-        else:
-            flash("User Created", category='success')
-            # add user to database
-            pass
+        
+        valid = True
+        if not name:
+            flash('Nome não preenchido',category='error')
+            valid = False
+        if not username:
+            flash('Username não preenchido',category='error')
+            valid = False
+        if not email:
+            flash('Email não preenchido',category='error')
+            valid = False
+        if not password1 or not password2:
+            flash('Password não preenchida',category='error')
+            valid = False
+        if not date:
+            flash('Data não preenchida',category='error')
+            valid = False
+        if valid:
+            if password1 != password2:
+                flash('Passwords must be equal',category='error')
+            else:
+                flash("User Created", category='success')
+                # add user to database
+
+        
     
     x = datetime.datetime.now() 
     y = str(datetime.date(year=x.year-18,month=x.month,day=x.day))
