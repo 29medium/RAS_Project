@@ -3,19 +3,25 @@
 
 {% block content %}
 <br/>
-<form method='POST' >
-    <h3 align="center">Login</h3>
-    <div class="form-group">
-        <label for="email">Email </label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email"/>
-    </div>
-    <div class="form-group">
-        <label for="password1">Password</label>
-        <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter Password"/>
-    <br />
 
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary">Login</button>
+<body class="hold-transition login-page" >
+    <div class="login-box">
+        <!-- /.login-logo -->
+    <form method='POST' style="padding: 2em 35em">
+        <h3 align="center">Login</h3>
+        <div class="form-group">
+            <label for="email">Email </label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email"/>
+        </div>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter Password"/>
+        <br />
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+    </form>
     </div>
-</form>
+</body>
 {% endblock %}
