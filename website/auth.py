@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, flash
+from . import execute_querie
 
 import datetime
 
@@ -24,13 +25,10 @@ def sign_up():
         email = request.form.get("email")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
+        cc = request.form.get("cc")
+        nif = request.form.get("nif")
+        iban = request.form.get("iban")
         date = request.form.get("dataN")
-        print(name)
-        print(username)
-        print(email)
-        print(password1)
-        print(password2)
-        print(date)
         
         valid = True
         if not name:
@@ -48,15 +46,30 @@ def sign_up():
         if not date:
             flash('Data não preenchida',category='error')
             valid = False
+        if not cc:
+            flash('Cartão de Cidadão não preenchido', category='error')
+            valid = False
+        if not nif:
+            flash('Número de Identificação Fiscal não preenchido', category='error')
+            valid = False
+        if not iban:
+            flash('IBAN não introduzido', category='error')
+            valid = False
+        
         if valid:
             if password1 != password2:
                 flash('Passwords must be equal',category='error')
             else:
                 flash("User Created", category='success')
-                # add user to database
+                add_user = '''INSERT INTO User
+                    (username, name, email, password, iban, nif, cc, birth_date, type)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, "1") ;'''
+                
+                data_user = (username, name, email, password1, iban, nif, cc, date)
 
-        
-    
+                execute_querie(add_user, data_user)
+                
+
     x = datetime.datetime.now() 
     y = str(datetime.date(year=x.year-18,month=x.month,day=x.day))
     return render_template("sign_up.html", maxDate=y)
