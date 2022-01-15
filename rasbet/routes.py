@@ -21,7 +21,17 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        user = User(username=form.username.data,
+                    name=form.name.data,
+                    email=form.email.data, 
+                    password=hashed_password,
+                    birth_date=form.birth_date.data,
+                    nif=form.nif.data,
+                    cc=form.cc.data,
+                    iban=form.iban.data,
+                    address=form.address.data,
+                    phone=form.phone.data,
+                    role="user")
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to login', 'success')
@@ -56,11 +66,25 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
+        current_user.name = form.name.data
         current_user.email = form.email.data
+        current_user.birth_date = form.birth_date.data
+        current_user.nif = form.nif.data
+        current_user.cc = form.cc.data
+        current_user.iban = form.iban.data
+        current_user.address = form.address.data
+        current_user.phone = form.phone.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
+        form.name.data = current_user.name
         form.email.data = current_user.email
+        form.birth_date.data = current_user.birth_date
+        form.nif.data = current_user.nif
+        form.cc.data = current_user.cc
+        form.iban.data = current_user.iban
+        form.address.data = current_user.address
+        form.phone.data = current_user.phone  
     return render_template('account.html', title='Account', form=form)
