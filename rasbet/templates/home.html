@@ -1,4 +1,68 @@
 {% extends "layout.html" %}
+{% block title %} Home {% endblock %}
+
+       
+
 {% block content %}
-    <h1>Home Page</h1>
+<h1 align="center" >This is the HOMEPAGE</h1>
+
+<table class="table" size="padding: 8em">
+    <thead class="p-3 mb-2 bg-danger text-white">
+      <tr>
+        <th scope="col">Equipa 1</th>
+        <!-- <th scope="col">Vitoria 1</th>
+        <th scope="col">Empate</th>
+        <th scope="col">Vitoria 2</th> -->
+        <th>Odd</th>
+        <th scope="col">Equipa 2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Benfica</td>
+        <!-- <td>0.9</td>
+        <td>0.32</td>
+        <td>3.0</td> -->
+        <td>
+            
+            
+        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    0.3
+        </button>
+        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+          2.3
+        </button>
+        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+         1.5
+        </button>
+              
+        </td>
+        <td>Porto</td>
+      </tr>
+      <tr>
+        <td>Benfica</td>
+        <!-- <td>0.9</td>
+        <td>0.32</td>
+        <td>3.0</td> -->
+        <td>
+            <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+                0.3
+    </button>
+    <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+      2.3
+    </button>
+    <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+     1.5
+    </button>
+           
+        </td>
+        <td>Porto</td>
+      </tr>
+
+    </tbody>
+  </table>
+  
+  
+
+
 {% endblock %}

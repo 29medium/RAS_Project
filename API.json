@@ -1,0 +1,324 @@
+{
+    "Desportos": [
+        {
+            "id":0,
+            "nome":"Futebol",
+            "competicoes":[
+                {
+                    "id":0,
+                    "nome":"Liga Portuguesa"
+                },
+                {
+                    "id":1,
+                    "nome":"UEFA Champions League"
+                }
+
+            ],
+            "intervinientes":[
+                {
+                    "id":0,
+                    "nome":"Benfica",
+                    "competição":[0,1]
+                },
+                {
+                    "id":1,
+                    "nome":"Porto",
+                    "competição":[0]
+                },
+                {
+                    "id":2,
+                    "nome":"Sporting",
+                    "competição":[0,1]
+                },
+                {
+                    "id":3,
+                    "nome":"Liverpool",
+                    "competição":[1]
+                },
+                {
+                    "id":4,
+                    "nome":"Ajax",
+                    "competição":[1]
+                }
+            ],
+            "eventos": [
+                {
+                    "id":0,
+                    "intervenientes":[0,1],
+                    "competição":0,
+                    "status":0,
+                    "data":"2022-01-25",
+                    "resultado":-1
+                },
+                {
+                    "id":1,
+                    "intervenientes":[2,1],
+                    "competição":1,
+                    "status":2,
+                    "data":"2021-09-19",
+                    "resultado":-1
+                },
+                {
+                    "id":2,
+                    "intervenientes":[3,2],
+                    "competição":1,
+                    "status":2,
+                    "data":"2021-11-24",
+                    "resultado":3
+                },
+                {
+                    "id":3,
+                    "intervenientes":[4,2],
+                    "competição":1,
+                    "status":1,
+                    "data":"2021-01-18",
+                    "resultado":-1
+                }
+            ]
+        
+        },
+        {
+            "id":1,
+            "nome":"Formula1",
+            "competicoes":[
+                {
+                    "id":0,
+                    "nome":"Formula1"
+                }
+            ],
+            "intervinientes":[
+                {
+                    "id":0,
+                    "nome":"Max Verstappen",
+                    "competição":[0]
+                },
+                {
+                    "id":1,
+                    "nome":"Sergio Perez",
+                    "competição":[0]
+                },
+                {
+                    "id":2,
+                    "nome":"Lewis Hamilton",
+                    "competição":[0]
+                },
+                {
+                    "id":3,
+                    "nome":"George Russel",
+                    "competição":[0]
+                },
+                {
+                    "id":4,
+                    "nome":"Carlos Sainz",
+                    "competição":[0]
+                },
+                {
+                    "id":5,
+                    "nome":"Charles Leclerc",
+                    "competição":[0]
+                },
+                {
+                    "id":6,
+                    "nome":"Lando Norris",
+                    "competição":[0]
+                },
+                {
+                    "id":7,
+                    "nome":"Daniel Ricciardo",
+                    "competição":[0]
+                },
+                {
+                    "id":8,
+                    "nome":"Fernando Alonso",
+                    "competição":[0]
+                },
+                {
+                    "id":9,
+                    "nome":"Esteban Ocon",
+                    "competição":[0]
+                },
+                {
+                    "id":10,
+                    "nome":"Pierre Gasly",
+                    "competição":[0]
+                },
+                {
+                    "id":11,
+                    "nome":"Yuki Tsunoda",
+                    "competição":[0]
+                },
+                {
+                    "id":12,
+                    "nome":"Sebastian Vettel",
+                    "competição":[0]
+                },
+                {
+                    "id":13,
+                    "nome":"Lance Stroll",
+                    "competição":[0]
+                },
+                {
+                    "id":14,
+                    "nome":"Alex Albon",
+                    "competição":[0]
+                },
+                {
+                    "id":15,
+                    "nome":"Nicholas Latifi",
+                    "competição":[0]
+                },
+                {
+                    "id":16,
+                    "nome":"Valtteri Bottas",
+                    "competição":[0]
+                },
+                {
+                    "id":17,
+                    "nome":"Guanyu Zhou",
+                    "competição":[0]
+                },
+                {
+                    "id":18,
+                    "nome":"Mick Schumacher",
+                    "competição":[0]
+                },
+                {
+                    "id":19,
+                    "nome":"Nikita Mazepin",
+                    "competição":[0]
+                }
+         
+           
+            ],
+            "eventos": [
+                {
+                    "id":0,
+                    "intervenientes":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+                    "competição":0,
+                    "status":0,
+                    "data":"2022-01-25",
+                    "resultado":-1
+                },
+                {
+                    "id":1,
+                    "intervenientes":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+                    "competição":0,
+                    "status":0,
+                    "data":"2022-09-19",
+                    "resultado":-1
+                },
+                {
+                    "id":2,
+                    "intervenientes":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+                    "competição":0,
+                    "status":0,
+                    "data":"2021-09-19",
+                    "resultado":0
+                }
+            ]
+        
+        },
+        {
+            "id":2,
+            "nome":"Ténis",
+            "competicoes":[
+                {
+                    "id":0,
+                    "nome":"Wimbledon"
+                },
+                {
+                    "id":1,
+                    "nome":"US Open"
+                }
+
+            ],
+            "intervinientes":[
+                {
+                    "id":0,
+                    "nome":"Novak Djokovic",
+                    "competição":[0]
+                },
+                {
+                    "id":1,
+                    "nome":"Daniil Medvedev",
+                    "competição":[0]
+                },
+                {
+                    "id":2,
+                    "nome":"Stefanos Tsitsipas",
+                    "competição":[0]
+                },
+                {
+                    "id":3,
+                    "nome":"Alexander Zverev",
+                    "competição":[0,1]
+                },
+                {
+                    "id":4,
+                    "nome":"Andrey Rublev",
+                    "competição":[0,1]
+                },
+                {
+                    "id":5,
+                    "nome":"Roger Federer",
+                    "competição":[0,1]
+                },
+                {
+                    "id":6,
+                    "nome":"Matteo Berrettini",
+                    "competição":[1]
+                },
+                {
+                    "id":7,
+                    "nome":"Roberto Bautista Agut",
+                    "competição":[1]
+                },
+                {
+                    "id":8,
+                    "nome":"Denos Shapovalov",
+                    "competição":[1]
+                }
+            ],
+            "eventos": [
+                {
+                    "id":0,
+                    "intervenientes":[0,1],
+                    "competição":0,
+                    "status":0,
+                    "data":"2022-01-25",
+                    "resultado":-1
+                },
+                {
+                    "id":1,
+                    "intervenientes":[2,3],
+                    "competição":0,
+                    "status":0,
+                    "data":"2022-01-25",
+                    "resultado":-1
+                },
+                {
+                    "id":2,
+                    "intervenientes":[4,5],
+                    "competição":0,
+                    "status":0,
+                    "data":"2022-01-25",
+                    "resultado":-1
+                },
+                {
+                    "id":3,
+                    "intervenientes":[3,6],
+                    "competição":1,
+                    "status":2,
+                    "data":"2022-01-18"
+                }
+            ]
+        
+        }
+        
+
+
+
+    ]                            
+
+    
+}
