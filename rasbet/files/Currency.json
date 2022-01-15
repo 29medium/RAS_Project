@@ -1,0 +1,28 @@
+{
+    "Currency":[
+        {
+            "id":0,
+            "name":"Dollar",
+            "symbol":"$",
+            "taxa":1.0
+        },
+        {
+            "id":1,
+            "name":"Euro",
+            "symbol":"€",
+            "taxa":1.2
+        },
+        {
+            "id":2,
+            "name":"Bitcoin",
+            "symbol":"B",
+            "taxa":42911.80
+        },
+        {
+            "id":3,
+            "name":"Dogecoin",
+            "symbol":"D",
+            "taxa":0.25
+        }
+    ]
+}

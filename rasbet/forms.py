@@ -32,7 +32,7 @@ class RegistrationForm(FlaskForm):
     
     def validate_birth_date(self, birth_date):
         max_date = datetime.datetime.now() - datetime.timedelta(days=18*365)
-        if birth_date < max_date:
+        if birth_date.data > max_date.date():
             raise ValidationError('Tem de ser maior de idade')
 
 class LoginForm(FlaskForm):

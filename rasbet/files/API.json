@@ -2,50 +2,50 @@
     "Desportos": [
         {
             "id":0,
-            "nome":"Futebol",
+            "name":"Futebol",
             "competicoes":[
                 {
                     "id":0,
-                    "nome":"Liga Portuguesa"
+                    "name":"Liga Portuguesa"
                 },
                 {
                     "id":1,
-                    "nome":"UEFA Champions League"
+                    "name":"UEFA Champions League"
                 }
 
             ],
-            "intervinientes":[
+            "intervenientes":[
                 {
                     "id":0,
-                    "nome":"Benfica",
-                    "competição":[0,1]
+                    "name":"Benfica",
+                    "competicao":[0,1]
                 },
                 {
                     "id":1,
-                    "nome":"Porto",
-                    "competição":[0]
+                    "name":"Porto",
+                    "competicao":[0]
                 },
                 {
                     "id":2,
-                    "nome":"Sporting",
-                    "competição":[0,1]
+                    "name":"Sporting",
+                    "competicao":[0,1]
                 },
                 {
                     "id":3,
-                    "nome":"Liverpool",
-                    "competição":[1]
+                    "name":"Liverpool",
+                    "competicao":[1]
                 },
                 {
                     "id":4,
-                    "nome":"Ajax",
-                    "competição":[1]
+                    "name":"Ajax",
+                    "competicao":[1]
                 }
             ],
             "eventos": [
                 {
                     "id":0,
                     "intervenientes":[0,1],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2022-01-25",
                     "resultado":-1
@@ -53,7 +53,7 @@
                 {
                     "id":1,
                     "intervenientes":[2,1],
-                    "competição":1,
+                    "competicao":1,
                     "status":2,
                     "data":"2021-09-19",
                     "resultado":-1
@@ -61,7 +61,7 @@
                 {
                     "id":2,
                     "intervenientes":[3,2],
-                    "competição":1,
+                    "competicao":1,
                     "status":2,
                     "data":"2021-11-24",
                     "resultado":3
@@ -69,7 +69,7 @@
                 {
                     "id":3,
                     "intervenientes":[4,2],
-                    "competição":1,
+                    "competicao":1,
                     "status":1,
                     "data":"2021-01-18",
                     "resultado":-1
@@ -79,113 +79,113 @@
         },
         {
             "id":1,
-            "nome":"Formula1",
+            "name":"Formula1",
             "competicoes":[
                 {
                     "id":0,
-                    "nome":"Formula1"
+                    "name":"Formula1"
                 }
             ],
-            "intervinientes":[
+            "intervenientes":[
                 {
                     "id":0,
-                    "nome":"Max Verstappen",
-                    "competição":[0]
+                    "name":"Max Verstappen",
+                    "competicao":[0]
                 },
                 {
                     "id":1,
-                    "nome":"Sergio Perez",
-                    "competição":[0]
+                    "name":"Sergio Perez",
+                    "competicao":[0]
                 },
                 {
                     "id":2,
-                    "nome":"Lewis Hamilton",
-                    "competição":[0]
+                    "name":"Lewis Hamilton",
+                    "competicao":[0]
                 },
                 {
                     "id":3,
-                    "nome":"George Russel",
-                    "competição":[0]
+                    "name":"George Russel",
+                    "competicao":[0]
                 },
                 {
                     "id":4,
-                    "nome":"Carlos Sainz",
-                    "competição":[0]
+                    "name":"Carlos Sainz",
+                    "competicao":[0]
                 },
                 {
                     "id":5,
-                    "nome":"Charles Leclerc",
-                    "competição":[0]
+                    "name":"Charles Leclerc",
+                    "competicao":[0]
                 },
                 {
                     "id":6,
-                    "nome":"Lando Norris",
-                    "competição":[0]
+                    "name":"Lando Norris",
+                    "competicao":[0]
                 },
                 {
                     "id":7,
-                    "nome":"Daniel Ricciardo",
-                    "competição":[0]
+                    "name":"Daniel Ricciardo",
+                    "competicao":[0]
                 },
                 {
                     "id":8,
-                    "nome":"Fernando Alonso",
-                    "competição":[0]
+                    "name":"Fernando Alonso",
+                    "competicao":[0]
                 },
                 {
                     "id":9,
-                    "nome":"Esteban Ocon",
-                    "competição":[0]
+                    "name":"Esteban Ocon",
+                    "competicao":[0]
                 },
                 {
                     "id":10,
-                    "nome":"Pierre Gasly",
-                    "competição":[0]
+                    "name":"Pierre Gasly",
+                    "competicao":[0]
                 },
                 {
                     "id":11,
-                    "nome":"Yuki Tsunoda",
-                    "competição":[0]
+                    "name":"Yuki Tsunoda",
+                    "competicao":[0]
                 },
                 {
                     "id":12,
-                    "nome":"Sebastian Vettel",
-                    "competição":[0]
+                    "name":"Sebastian Vettel",
+                    "competicao":[0]
                 },
                 {
                     "id":13,
-                    "nome":"Lance Stroll",
-                    "competição":[0]
+                    "name":"Lance Stroll",
+                    "competicao":[0]
                 },
                 {
                     "id":14,
-                    "nome":"Alex Albon",
-                    "competição":[0]
+                    "name":"Alex Albon",
+                    "competicao":[0]
                 },
                 {
                     "id":15,
-                    "nome":"Nicholas Latifi",
-                    "competição":[0]
+                    "name":"Nicholas Latifi",
+                    "competicao":[0]
                 },
                 {
                     "id":16,
-                    "nome":"Valtteri Bottas",
-                    "competição":[0]
+                    "name":"Valtteri Bottas",
+                    "competicao":[0]
                 },
                 {
                     "id":17,
-                    "nome":"Guanyu Zhou",
-                    "competição":[0]
+                    "name":"Guanyu Zhou",
+                    "competicao":[0]
                 },
                 {
                     "id":18,
-                    "nome":"Mick Schumacher",
-                    "competição":[0]
+                    "name":"Mick Schumacher",
+                    "competicao":[0]
                 },
                 {
                     "id":19,
-                    "nome":"Nikita Mazepin",
-                    "competição":[0]
+                    "name":"Nikita Mazepin",
+                    "competicao":[0]
                 }
          
            
@@ -194,7 +194,7 @@
                 {
                     "id":0,
                     "intervenientes":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2022-01-25",
                     "resultado":-1
@@ -202,7 +202,7 @@
                 {
                     "id":1,
                     "intervenientes":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2022-09-19",
                     "resultado":-1
@@ -210,7 +210,7 @@
                 {
                     "id":2,
                     "intervenientes":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2021-09-19",
                     "resultado":0
@@ -220,70 +220,70 @@
         },
         {
             "id":2,
-            "nome":"Ténis",
+            "name":"Ténis",
             "competicoes":[
                 {
                     "id":0,
-                    "nome":"Wimbledon"
+                    "name":"Wimbledon"
                 },
                 {
                     "id":1,
-                    "nome":"US Open"
+                    "name":"US Open"
                 }
 
             ],
-            "intervinientes":[
+            "intervenientes":[
                 {
                     "id":0,
-                    "nome":"Novak Djokovic",
-                    "competição":[0]
+                    "name":"Novak Djokovic",
+                    "competicao":[0]
                 },
                 {
                     "id":1,
-                    "nome":"Daniil Medvedev",
-                    "competição":[0]
+                    "name":"Daniil Medvedev",
+                    "competicao":[0]
                 },
                 {
                     "id":2,
-                    "nome":"Stefanos Tsitsipas",
-                    "competição":[0]
+                    "name":"Stefanos Tsitsipas",
+                    "competicao":[0]
                 },
                 {
                     "id":3,
-                    "nome":"Alexander Zverev",
-                    "competição":[0,1]
+                    "name":"Alexander Zverev",
+                    "competicao":[0,1]
                 },
                 {
                     "id":4,
-                    "nome":"Andrey Rublev",
-                    "competição":[0,1]
+                    "name":"Andrey Rublev",
+                    "competicao":[0,1]
                 },
                 {
                     "id":5,
-                    "nome":"Roger Federer",
-                    "competição":[0,1]
+                    "name":"Roger Federer",
+                    "competicao":[0,1]
                 },
                 {
                     "id":6,
-                    "nome":"Matteo Berrettini",
-                    "competição":[1]
+                    "name":"Matteo Berrettini",
+                    "competicao":[1]
                 },
                 {
                     "id":7,
-                    "nome":"Roberto Bautista Agut",
-                    "competição":[1]
+                    "name":"Roberto Bautista Agut",
+                    "competicao":[1]
                 },
                 {
                     "id":8,
-                    "nome":"Denos Shapovalov",
-                    "competição":[1]
+                    "name":"Denos Shapovalov",
+                    "competicao":[1]
                 }
             ],
             "eventos": [
                 {
                     "id":0,
                     "intervenientes":[0,1],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2022-01-25",
                     "resultado":-1
@@ -291,7 +291,7 @@
                 {
                     "id":1,
                     "intervenientes":[2,3],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2022-01-25",
                     "resultado":-1
@@ -299,7 +299,7 @@
                 {
                     "id":2,
                     "intervenientes":[4,5],
-                    "competição":0,
+                    "competicao":0,
                     "status":0,
                     "data":"2022-01-25",
                     "resultado":-1
@@ -307,7 +307,7 @@
                 {
                     "id":3,
                     "intervenientes":[3,6],
-                    "competição":1,
+                    "competicao":1,
                     "status":2,
                     "data":"2022-01-18"
                 }

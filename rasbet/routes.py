@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from rasbet import app, db, bcrypt
 from rasbet.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from rasbet.models import User
+from rasbet.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route("/")
@@ -33,7 +33,14 @@ def register():
                     phone=form.phone.data,
                     role="user")
         db.session.add(user)
+
+        currencies = Currency.query.all()
+        for cur in currencies:
+            wallet = Wallet(balance=0.0, user_id=user.id, currency_id=cur.id)
+            print(wallet)
+            db.session.add(wallet)
         db.session.commit()
+        
         flash('Your account has been created! You are now able to login', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -64,6 +71,13 @@ def logout():
 @login_required
 def account():
     form = UpdateAccountForm()
+    balance = {}
+    wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+    for w in wallets:
+        cur = Currency.query.filter_by(id=w.currency_id).first()
+        balance[cur.name]=w.balance
+
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.name = form.name.data
@@ -87,4 +101,4 @@ def account():
         form.iban.data = current_user.iban
         form.address.data = current_user.address
         form.phone.data = current_user.phone  
-    return render_template('account.html', title='Account', form=form)
+    return render_template('account.html', title='Account', form=form, balance=balance)

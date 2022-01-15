@@ -5,6 +5,9 @@
             <div class="media-body">
                 <h2 class="account-heading">{{ current_user.username }}</h2>
                 <p class="text-secondary">{{ current_user.email }}</p>
+                {% for key in balance.keys() %}
+                <p class="text-secondary">{{ key }}: {{ balance[key] }}</p>
+                {% endfor %}
             </div>
         </div>
             <form method="POST" action="">

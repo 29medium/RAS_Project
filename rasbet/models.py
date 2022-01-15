@@ -7,7 +7,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -20,25 +20,35 @@ class User(db.Model, UserMixin):
     phone = db.Column(db.String(15), unique=True, nullable = False)
     role = db.Column(db.String(20), unique = False)
     wallet = db.relationship("Wallet")
-    movements = db.relationship("Movement")
     bets = db.relationship("Bet")
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
 
 class Wallet(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     balance = db.Column(db.Float, unique = False, nullable = False)
-    currency = db.Column(db.String(20), unique = False, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id', ondelete='CASCADE'), nullable=False)
     wm = db.relationship("WalletMovement")
 
+    def __repr__(self):
+        return f"Wallet('{self.balance}', '{self.user_id}')"
+
+class Currency(db.Model):
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
+    name = db.Column(db.String(20), unique = False, nullable = False)
+    conversion_rate = db.Column(db.Float, nullable = False)
+    wallets = db.relationship("Wallet")
+
+    def __repr__(self):
+        return f"Currency('{self.name}', '{self.conversion_rate}')"
+
 class Movement(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = False)
     type = db.Column(db.String(20), unique = False, nullable = False)
     date = db.Column(db.DateTime, nullable = False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     wm = db.relationship("WalletMovement")
 
 class WalletMovement(db.Model):
@@ -46,7 +56,7 @@ class WalletMovement(db.Model):
     wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id', ondelete='CASCADE'), primary_key=True, nullable=False)
 
 class Bet(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = False)
     state = db.Column(db.String(20), unique = False, nullable = False)
     date = db.Column(db.DateTime, nullable = False)
@@ -58,14 +68,14 @@ class BetOdd(db.Model):
     odd_id = db.Column(db.Integer, db.ForeignKey('odd.id', ondelete='CASCADE'), primary_key=True, nullable=False)
 
 class Odd(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = False)
     description = db.Column(db.String(20), unique = False, nullable = False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id', ondelete='CASCADE'), nullable=False)
     bo = db.relationship("BetOdd")
 
 class Event(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     start_date = db.Column(db.DateTime, nullable = False)
     end_date = db.Column(db.DateTime, nullable = False)
     state = db.Column(db.String(20), unique = False, nullable = False)
@@ -74,19 +84,22 @@ class Event(db.Model):
     ep = db.relationship("ParticipantEvent")
 
 class Competition(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(120), unique = False, nullable = False)
     sport_id = db.Column(db.Integer, db.ForeignKey('sport.id', ondelete='CASCADE'), nullable=False)
     events = db.relationship("Event")
     pc = db.relationship("ParticipantCompetition")
 
 class Sport(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(120), unique = True, nullable = False)
     competitions = db.relationship("Competition")
+    
+    def __repr__(self):
+        return f"Sport('{self.id}', '{self.name}')"
 
 class Participant(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(120), unique = True, nullable = False)
     pc = db.relationship("ParticipantCompetition")
     pe = db.relationship("ParticipantEvent")
@@ -98,3 +111,4 @@ class ParticipantCompetition(db.Model):
 class ParticipantEvent(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event.id', ondelete='CASCADE'), primary_key=True, nullable=False)
     participant_id = db.Column(db.Integer, db.ForeignKey('participant.id', ondelete='CASCADE'), primary_key=True, nullable=False)
+    result = db.Column(db.Integer, nullable=False)

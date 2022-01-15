@@ -1,5 +1,6 @@
+import imp
 import threading
-from apiGraber import loadApi
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -14,6 +15,18 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
-apiThread = threading.Thread(target=loadApi,args=db)
 
-from rasbet import routes
+
+
+from rasbet.apiGraber import worker,loadAllApi
+
+loadAllApi()
+
+workerThread = threading.Thread(target=worker)
+workerThread.daemon = True
+workerThread.start()
+
+import rasbet.routes
+
+
+
