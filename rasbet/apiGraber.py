@@ -13,6 +13,7 @@ def loadApi():
         if not desp:
             novo = Sport(id=desporto['id'],name=desporto['name'])
             db.session.add(novo)
+            db.session.commit()
          
 
         for competicao in desporto['competicoes']:
@@ -20,18 +21,21 @@ def loadApi():
             if not comp:
                 novo = Competition(id=competicao['id'],name=competicao['name'],sport_id=desporto['id'])
                 db.session.add(novo)    
+                db.session.commit()
 
         for interveniente in desporto['intervenientes']:
             part = Participant.query.filter_by(id=interveniente['id']).first()
             if not part:
                 novo = Participant(id=interveniente['id'],name=interveniente['name'])
                 db.session.add(novo)
+                db.session.commit()
                 
             for comp in interveniente['competicao']:
                 part = ParticipantCompetition.query.filter_by(competition_id=comp,participant_id=interveniente['id']).first()
                 if not part:
                     novo = ParticipantCompetition(competition_id=comp,participant_id=interveniente['id'])
                     db.session.add(novo)
+                    db.session.commit()
         
         for evento in desporto['eventos']:
             event = Event.query.filter_by(id=evento['id']).first()
@@ -40,6 +44,7 @@ def loadApi():
                 db.session.add(novo)
             else:
                 event.state = evento['status']
+            db.session.commit()
 
             for participant in evento['intervenientes']:
                 if (datetime.now().date() < datetime.strptime(evento['data'],'%Y-%m-%d').date()):
@@ -58,10 +63,7 @@ def loadApi():
                     db.session.add(novo)
                 else:
                     partEvent.result = result
-                    
-                    
-                    
-    db.session.commit()
+                db.session.commit()
     
 
 def loadCurr():
@@ -70,7 +72,7 @@ def loadCurr():
     for cur in data['Currency']:
         c = Currency.query.filter_by(id=cur['id']).first()
         if not c:
-            novo = Currency(id=cur['id'],name=cur['name'],conversion_rate=cur['taxa'])
+            novo = Currency(id=cur['id'],name=cur['name'],symbol=cur['symbol'],convertion_rate=cur['taxa']) 
             db.session.add(novo)
         else:
             c.conversion_rate=cur['taxa']
@@ -90,6 +92,7 @@ def loadApiWorker():
                 db.session.add(novo)
             else:
                 event.state = evento['status']
+            db.session.commit()
 
             for participant in evento['intervenientes']:
                 if (datetime.now().date() < datetime.strptime(evento['data'],'%Y-%m-%d').date()):
@@ -108,10 +111,7 @@ def loadApiWorker():
                     db.session.add(novo)
                 else:
                     partEvent.result = result
-                    
-             
-                    
-    db.session.commit()
+                db.session.commit()
     
 def worker():
     while True:

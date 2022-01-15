@@ -159,6 +159,20 @@
                         {{ form.phone(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+                <div class="form-group">
+                    {{ form.currency_fav.label(class="form-control-label") }}
+
+                    {% if form.currency_fav.errors %}
+                        {{ form.currency_fav(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.currency_fav.errors %}
+                             <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.currency_fav(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}

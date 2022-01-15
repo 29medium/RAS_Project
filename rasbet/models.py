@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     address = db.Column(db.String(100), nullable = False)
     phone = db.Column(db.String(15), unique=True, nullable = False)
     role = db.Column(db.String(20), unique = False)
+    currency_fav = db.Column(db.Integer, db.ForeignKey('currency.id'), nullable=False)
     wallet = db.relationship("Wallet")
     bets = db.relationship("Bet")
 
@@ -38,8 +39,10 @@ class Wallet(db.Model):
 class Currency(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(20), unique = False, nullable = False)
-    conversion_rate = db.Column(db.Float, nullable = False)
+    symbol = db.Column(db.String(10), unique = True, nullable = False)
+    convertion_rate = db.Column(db.Float, nullable = False)
     wallets = db.relationship("Wallet")
+    users = db.relationship("User")
 
     def __repr__(self):
         return f"Currency('{self.name}', '{self.conversion_rate}')"

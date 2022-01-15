@@ -4,7 +4,7 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Depositar</legend>
+                <legend class="border-bottom mb-4">Converter</legend>
                 <div class="form-group">
                     {{ form.value.label(class="form-control-label") }}
 
@@ -20,17 +20,31 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.currency_id.label(class="form-control-label") }}
+                    {{ form.currency_id_out.label(class="form-control-label") }}
 
-                    {% if form.currency_id.errors %}
-                        {{ form.currency_id(class="form-control form-control-lg is-invalid") }}
+                    {% if form.currency_id_out.errors %}
+                        {{ form.currency_id_out(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for currency_id in form.currency_id.errors %}
+                            {% for currency_id_out in form.currency_id_out.errors %}
                              <span>{{ error }}</span>
                              {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.currency_id(class="form-control form-control-lg") }}
+                        {{ form.currency_id_out(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.currency_id_in.label(class="form-control-label") }}
+
+                    {% if form.currency_id_in.errors %}
+                        {{ form.currency_id_in(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for currency_id_in in form.currency_id_in.errors %}
+                             <span>{{ error }}</span>
+                             {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.currency_id_in(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
             </fieldset>

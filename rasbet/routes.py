@@ -8,11 +8,28 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', title='Home')
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+
+    competitions = [[],[],[]]
+    for c in Competition.query.all():
+        if c.sport_id == 0:
+            competitions[0].append(c.name)
+        elif c.sport_id == 1:
+            competitions[1].append(c.name)
+        elif c.sport_id == 2:
+            competitions[2].append(c.name)
+
+    return render_template('home.html', title='Home', competitions=competitions, balance=balance, symbol=symbol)
 
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About')
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+        
+    return render_template('about.html', title='About', balance=balance, symbol=symbol)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -32,6 +49,7 @@ def register():
                     iban=form.iban.data,
                     address=form.address.data,
                     phone=form.phone.data,
+                    currency_fav=form.currency_fav.data,
                     role="user")
         db.session.add(user)
         db.session.commit()
@@ -72,13 +90,17 @@ def logout():
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+
     form = UpdateAccountForm()
-    balance = {}
+    balances = {}
     wallets = Wallet.query.filter_by(user_id=current_user.id).all()
 
     for w in wallets:
         cur = Currency.query.filter_by(id=w.currency_id).first()
-        balance[cur.name]=w.balance
+        balances[cur.name]=w.balance
 
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -90,6 +112,7 @@ def account():
         current_user.iban = form.iban.data
         current_user.address = form.address.data
         current_user.phone = form.phone.data
+        current_user.currency_fav = form.currency_fav.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
@@ -102,12 +125,17 @@ def account():
         form.cc.data = current_user.cc
         form.iban.data = current_user.iban
         form.address.data = current_user.address
+        form.currency_fav.data = current_user.currency_fav
         form.phone.data = current_user.phone  
-    return render_template('account.html', title='Account', form=form, balance=balance)
+    return render_template('account.html', title='Account', form=form, balances=balances, balance=balance, symbol=symbol)
 
 @app.route("/account/deposit", methods=['GET', 'POST'])
 @login_required
 def deposit():
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+
     form = DepositForm()
 
     if form.validate_on_submit():
@@ -128,11 +156,15 @@ def deposit():
         flash('Depósito efetuado com sucesso')
         return redirect(url_for('account'))
 
-    return render_template('deposit.html', title='Deposit', form=form)
+    return render_template('deposit.html', title='Deposit', form=form, balance=balance, symbol=symbol)
 
 @app.route("/account/cashout", methods=['GET', 'POST'])
 @login_required
 def cashout():
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+        
     form = CashOutForm()
 
     if form.validate_on_submit():
@@ -153,4 +185,76 @@ def cashout():
         flash('Levantamento efetuado com sucesso')
         return redirect(url_for('account'))
 
-    return render_template('deposit.html', title='Cashout', form=form)
+    return render_template('cashout.html', title='Cashout', form=form, balance=balance, symbol=symbol)
+
+@app.route("/account/convert", methods=['GET', 'POST'])
+@login_required
+def convert():
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+        
+    form = ConvertForm()
+
+    if form.validate_on_submit():
+        mov_out = Movement(value=form.value.data,
+                       type="convert",
+                       date=datetime.now())
+        db.session.add(mov_out)
+        db.session.commit()
+
+        wallet_out = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id_out.data).first()
+        
+        wm_out = WalletMovement(movement_id=mov_out.id,
+                            wallet_id=wallet_out.id)
+        
+        db.session.add(wm_out)
+
+        wallet_out.balance -= form.value.data
+
+        db.session.commit()
+
+        wallet_in = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id_in.data).first()
+
+        new_value = form.value.data * 1/Currency.query.filter_by(id=wallet_in.currency_id).first().convertion_rate * Currency.query.filter_by(id=wallet_out.currency_id).first().convertion_rate * 0.98
+
+        mov_in = Movement(value=new_value,
+                       type="convert",
+                       date=datetime.now())
+
+        db.session.add(mov_in)
+        db.session.commit()
+    
+        wm_in = WalletMovement(movement_id=mov_in.id,
+                            wallet_id=wallet_in.id)
+
+        wallet_in.balance += new_value
+        
+        db.session.add(wm_in)
+        db.session.commit()
+
+        return redirect(url_for('account'))
+
+    return render_template('convert.html', title='Convert', form=form, balance=balance, symbol=symbol)
+
+def ord_movements(m):
+    return m.id
+
+@app.route("/account/movements")
+def movements():
+    if current_user.is_authenticated:
+        balance = Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+        
+    movements = []
+    currencies = {}
+
+    for w in Wallet.query.filter_by(user_id=current_user.id).all():
+        for wm in w.wm:
+            for m in Movement.query.filter_by(id=wm.movement_id).all():
+                movements.append(m)
+                currencies[m.id] = Currency.query.filter_by(id=w.currency_id).first().name
+
+    movements.sort(reverse=True,key=ord_movements)
+
+    return render_template('movements.html', title='Movemets', movements=movements, currencies=currencies, balance=balance, symbol=symbol)

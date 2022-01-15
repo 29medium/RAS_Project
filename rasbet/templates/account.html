@@ -5,8 +5,8 @@
             <div class="media-body">
                 <h2 class="account-heading">{{ current_user.username }}</h2>
                 <p class="text-secondary">{{ current_user.email }}</p>
-                {% for key in balance.keys() %}
-                <p class="text-secondary">{{ key }}: {{ balance[key] }}</p>
+                {% for key in balances.keys() %}
+                <p class="text-secondary">{{ key }}: {{ balances[key] }}</p>
                 {% endfor %}
             </div>
 
@@ -18,6 +18,16 @@
               <div class="button text-center">
                 <button type="button" class="btn btn-danger">
                     <a class="nav-item nav-link" href="{{ url_for('deposit') }}">Depositar</a>
+                </button>
+              </div>
+              <div class="button text-center">
+                <button type="button" class="btn btn-danger">
+                    <a class="nav-item nav-link" href="{{ url_for('convert') }}">Converter</a>
+                </button>
+              </div>
+              <div class="button text-center">
+                <button type="button" class="btn btn-danger">
+                    <a class="nav-item nav-link" href="{{ url_for('movements') }}">Movimentos</a>
                 </button>
               </div>
             </div>
@@ -136,6 +146,20 @@
                             </div>
                         {% else %}
                             {{ form.phone(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.currency_fav.label(class="form-control-label") }}
+    
+                        {% if form.currency_fav.errors %}
+                            {{ form.currency_fav(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.currency_fav.errors %}
+                                 <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.currency_fav(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
                 </fieldset>

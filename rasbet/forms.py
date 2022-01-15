@@ -7,6 +7,15 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from rasbet.models import *
 import datetime
 
+def currencyList():
+    currencies = Currency.query.with_entities(Currency.id, Currency.name).all()
+    choices = list()
+
+    for c in currencies:
+        choices.append((c.id, c.name))
+
+    return choices
+
 class RegistrationForm(FlaskForm):
     username = StringField('Nome de Utilizador', validators=[DataRequired(), Length(min=2, max=20)])
     name = StringField('Nome Completo', validators=[DataRequired()])
@@ -18,7 +27,8 @@ class RegistrationForm(FlaskForm):
     cc = StringField('Cartão de Cidadão', validators=[DataRequired(), Length(min=8, max=8)])
     iban = StringField('Iban', validators=[DataRequired(), Length(min=25, max=25)])
     address = StringField('Morada', validators=[DataRequired(), Length(max=100)])
-    phone = StringField('Número de Telemóvel', validators=[DataRequired()])
+    phone = StringField('Número de Telemóvel', validators=[DataRequired(), Length(min=9, max=9)])
+    currency_fav = SelectField(u'Selecionar Moeda Preferida', choices=currencyList(), validators=[DataRequired()])
 
     submit = SubmitField('Registar')
 
@@ -63,6 +73,7 @@ class UpdateAccountForm(FlaskForm):
     iban = StringField('Iban', validators=[DataRequired(), Length(min=25, max=25)])
     address = StringField('Morada', validators=[DataRequired(), Length(max=100)])
     phone = StringField('Número de Telemóvel', validators=[DataRequired()])
+    currency_fav = SelectField(u'Selecionar Moeda Preferida', choices=currencyList(), validators=[DataRequired()])
     submit = SubmitField('Update')
 
     def validate_username(self, username):
@@ -80,28 +91,17 @@ class UpdateAccountForm(FlaskForm):
         if birth_date.data > max_date.date():
             raise ValidationError('Tem de ser maior de idade')
 
-def currencyList():
-    currencies = Currency.query.with_entities(Currency.id, Currency.name).all()
-    choices = list()
-
-    for c in currencies:
-        choices.append((c.id, c.name))
-
-    return choices
-
 class DepositForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
     currency_id = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
 
     submit = SubmitField('Depositar')
 
-    def validate_negative(self, value, currency_id):
+    def validate_value(self, value):
         if value.data < 0:
             raise ValidationError(f'O levantamento tem de ser de um valor positivo')
-
-    def validate_min_value(self, value, currency_id):
-        if value.data < 10:
-            raise ValidationError(f'O depósito minimo é 10 {Currency.query.filter_by(id=currency_id.data).first().name}')
+        elif value.data < 10:
+            raise ValidationError(f'O depósito minimo é 10 {Currency.query.filter_by(id=self.currency_id.data).first().name}')
 
 class CashOutForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
@@ -109,10 +109,23 @@ class CashOutForm(FlaskForm):
 
     submit = SubmitField('Levantar')
 
-    def validate_negative(self, value, currency_id):
+    def validate_value(self, value):
         if value.data < 0:
             raise ValidationError(f'O levantamento tem de ser de um valor positivo')
-
-    def validate_max_value(self, value, currency_id):
-        if value.data > Wallet.query.filter_by(user_id=current_user.id, currency_id=currency_id).first().balance:
+        elif value.data > Wallet.query.filter_by(user_id=current_user.id, currency_id=self.currency_id.data).first().balance:
             raise ValidationError(f'Quantia indisponível na carteira')
+
+class ConvertForm(FlaskForm):
+    value = FloatField('Valor', validators=[DataRequired()])
+    currency_id_out = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
+    currency_id_in = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
+    
+    submit = SubmitField('Converter')
+
+    def validate_value(self, value):
+        if value.data < 0:
+            raise ValidationError(f'A conversão tem de ser de um valor positivo')
+        elif value.data > Wallet.query.filter_by(user_id=current_user.id, currency_id=self.currency_id_out.data).first().balance:
+            raise ValidationError(f'Quantia indisponível na carteira')
+        elif self.currency_id_in.data == self.currency_id_out.data:
+            raise ValidationError(f'A conversão tem de ser feita com duas moedas diferentes')
