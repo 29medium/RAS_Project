@@ -1,6 +1,7 @@
+from locale import currency
 from flask import render_template, url_for, flash, redirect, request
 from rasbet import app, db, bcrypt
-from rasbet.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from rasbet.forms import *
 from rasbet.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -33,6 +34,7 @@ def register():
                     phone=form.phone.data,
                     role="user")
         db.session.add(user)
+        db.session.commit()
 
         currencies = Currency.query.all()
         for cur in currencies:
@@ -102,3 +104,53 @@ def account():
         form.address.data = current_user.address
         form.phone.data = current_user.phone  
     return render_template('account.html', title='Account', form=form, balance=balance)
+
+@app.route("/account/deposit", methods=['GET', 'POST'])
+@login_required
+def deposit():
+    form = DepositForm()
+
+    if form.validate_on_submit():
+        mov = Movement(value=form.value.data,
+                       type="deposit",
+                       date=datetime.now())
+        db.session.add(mov)
+        db.session.commit()
+
+        wallet = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
+
+        wm = WalletMovement(movement_id=mov.id,
+                            wallet_id=wallet.id)
+        db.session.add(wm)
+        wallet.balance += form.value.data
+        db.session.commit()
+
+        flash('Depósito efetuado com sucesso')
+        return redirect(url_for('account'))
+
+    return render_template('deposit.html', title='Deposit', form=form)
+
+@app.route("/account/cashout", methods=['GET', 'POST'])
+@login_required
+def cashout():
+    form = CashOutForm()
+
+    if form.validate_on_submit():
+        mov = Movement(value=form.value.data,
+                       type="cashout",
+                       date=datetime.now())
+        db.session.add(mov)
+        db.session.commit()
+
+        wallet = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
+
+        wm = WalletMovement(movement_id=mov.id,
+                            wallet_id=wallet.id)
+        db.session.add(wm)
+        wallet.balance -= form.value.data
+        db.session.commit()
+
+        flash('Levantamento efetuado com sucesso')
+        return redirect(url_for('account'))
+
+    return render_template('deposit.html', title='Cashout', form=form)

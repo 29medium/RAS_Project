@@ -1,3 +1,4 @@
 __pycache__
 venv
-website/__pycache__
+rasbet/__pycache__
+rasbet/rasbet.db

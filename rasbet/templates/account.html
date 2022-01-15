@@ -9,7 +9,19 @@
                 <p class="text-secondary">{{ key }}: {{ balance[key] }}</p>
                 {% endfor %}
             </div>
-        </div>
+
+            <div class="button text-center">
+                <button type="button" class="btn btn-danger">
+                    <a class="nav-item nav-link" href="{{ url_for('cashout') }}">Levantar</a>
+                </button>
+              </div>
+              <div class="button text-center">
+                <button type="button" class="btn btn-danger">
+                    <a class="nav-item nav-link" href="{{ url_for('deposit') }}">Depositar</a>
+                </button>
+              </div>
+            </div>
+
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
                 <fieldset class="form-group">
