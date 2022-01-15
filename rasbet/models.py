@@ -41,7 +41,7 @@ class Movement(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     wm = db.relationship("WalletMovement")
 
-class WalletMovememnt(db.Model):
+class WalletMovement(db.Model):
     movement_id = db.Column(db.Integer, db.ForeignKey('movement.id', ondelete='CASCADE'), primary_key=True, nullable=False)
     wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id', ondelete='CASCADE'), primary_key=True, nullable=False)
 
@@ -51,7 +51,7 @@ class Bet(db.Model):
     state = db.Column(db.String(20), unique = False, nullable = False)
     date = db.Column(db.DateTime, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
-    bo = db.relationship("BetOpp")
+    bo = db.relationship("BetOdd")
 
 class BetOdd(db.Model):
     bet_id = db.Column(db.Integer, db.ForeignKey('bet.id', ondelete='CASCADE'), primary_key=True, nullable=False)
@@ -62,7 +62,7 @@ class Odd(db.Model):
     value = db.Column(db.Float, unique = False, nullable = False)
     description = db.Column(db.String(20), unique = False, nullable = False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id', ondelete='CASCADE'), nullable=False)
-    bo = db.relationship("BetOpp")
+    bo = db.relationship("BetOdd")
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key = True)
