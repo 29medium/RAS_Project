@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+<div class="col-md-8 mx-auto">
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -39,7 +40,7 @@
                 </div>
             </fieldset>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.submit(class="btn btn-outline-danger") }}
             </div>
         </form>
     </div>
@@ -52,4 +53,5 @@
             Não tem conta? <a class="ml-2" href="{{ url_for('register') }}">Sign Up</a>
         </small>
     </div>
+</div>
 {% endblock %}

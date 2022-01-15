@@ -23,6 +23,12 @@
             "name":"Dogecoin",
             "symbol":"D",
             "taxa":0.25
+        },
+        {
+            "id":4,
+            "name":"Libra",
+            "symbol":"£",
+            "taxa":1.37
         }
     ]
 }

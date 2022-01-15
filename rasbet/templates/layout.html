@@ -25,7 +25,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
               <div class="navbar-nav mr-auto">
+                <a class="nav-item nav-link" href="{{ url_for('bets', sport_id=0, competition_id=-1) }}">Apostas</a>
                 <a class="nav-item nav-link" href="{{ url_for('about') }}">Sobre</a>
+                <a class="nav-item nav-link" href="{{ url_for('faq') }}">FAQ</a>
               </div>
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
@@ -44,8 +46,9 @@
     </header>
 
     <main role="main" class="content-section">
+      <div class="container">
       <div class="row">
-          <div class="col-md-8">
+
               {% with messages = get_flashed_messages(with_categories=true) %} 
               {% if messages %}
                 {% for category, message in messages %}
@@ -57,32 +60,8 @@
               {% endwith %}
             {% block content %}{% endblock %}
           </div>
-        
-          <div class="col-md-4">
-            <div class="header">
-              <h3>Carrinho</h3>
-            </div>
-            <div class="content-section">
-              <p class='text-muted'>Apostas Selecionadas
-                <ul class="list-group">
-                  <li class="list-group-item list-group-item-light">Latest Posts</li>
-                  <li class="list-group-item list-group-item-light">Announcements</li>
-                  <li class="list-group-item list-group-item-light">Calendars</li>
-                  <li class="list-group-item list-group-item-light">etc</li>
-                </ul>
-              </p>
-              <div class="footer">
-                <p small class="text-muted"> Montante Total: </p>
-                <p class="text-muted-dark"> Total de Ganhos: 
-                <div class="button text-center">
-                  <button type="button" class="btn btn-danger">Aposta Já</button>
-                </div>
-                </p>
-              </div>
-            </div>
-          </div>
 
-      </div>
+    </div>
     </main>
 
 

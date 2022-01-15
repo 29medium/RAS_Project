@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+{% block title %} Home {% endblock %}
+
+
+{% block content %}
+
+<div class="col-md-8 mx-auto">
+  <div class="content-wrapper">
+
+    <h2>Apostas</h2>
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header" style="padding-top:20px ">
+      <div class="row">
+        <div class="col-2.5" style="align-self: flex-end;">
+          <div big class="dropdown">
+            <button class="btn btn-warning dropdown-toggle btn-lg" type="button" id="dropdownMenuButton"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Desporto
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for c in competitions[0] %}
+              <a class="dropdown-item" href="#">{{ c }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="col-3" style="align-self: flex-end;">
+          <div big class="dropdown">
+            <button class="btn btn-warning dropdown-toggle btn-lg" type="button" id="dropdownMenuButton"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Evento
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for c in competitions[0] %}
+              <a class="dropdown-item" href="#">{{ c }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="content" style="padding-top:20px ">
+      <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row-2">
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-header">
+
+                <table class="table" size="padding: 8em">
+                  <thead class="p-3 mb-2 bg-danger text-white">
+                    <tr>
+                      <th scope="col">Equipa 1</th>
+                      <!-- <th scope="col">Vitoria 1</th>
+                                  <th scope="col">Empate</th>
+                                  <th scope="col">Vitoria 2</th> -->
+                      <th>Odd</th>
+                      <th scope="col">Equipa 2</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Benfica</td>
+                      <!-- <td>0.9</td>
+                                  <td>0.32</td>
+                                  <td>3.0</td> -->
+                      <td>
+                        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
+                          autocomplete="off">
+                          0.3
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
+                          autocomplete="off">
+                          2.3
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
+                          autocomplete="off">
+                          1.5
+                        </button>
+
+                      </td>
+                      <td>Porto</td>
+                    </tr>
+                    <tr>
+                      <td>Benfica</td>
+                      <!-- <td>0.9</td>
+                                  <td>0.32</td>
+                                  <td>3.0</td> -->
+                      <td>
+                        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
+                          autocomplete="off">
+                          0.3
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
+                          autocomplete="off">
+                          2.3
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
+                          autocomplete="off">
+                          1.5
+                        </button>
+                      </td>
+                      <td>Porto</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="col-md-4 mx-auto">
+  <div class="header">
+    <h3>Carrinho</h3>
+  </div>
+  <div class="content-section">
+    <p class='text-muted'>Apostas Selecionadas
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-light">Latest Posts</li>
+        <li class="list-group-item list-group-item-light">Announcements</li>
+        <li class="list-group-item list-group-item-light">Calendars</li>
+        <li class="list-group-item list-group-item-light">etc</li>
+      </ul>
+    </p>
+    <div class="footer">
+      <p small class="text-muted"> Montante Total: </p>
+      <p class="text-muted-dark"> Total de Ganhos:
+        <div class="button text-center">
+          <button type="button" class="btn btn-danger">Aposta Já</button>
+        </div>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}>

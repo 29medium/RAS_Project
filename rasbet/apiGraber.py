@@ -1,5 +1,5 @@
 import json
-from rasbet.models import Participant, ParticipantCompetition, ParticipantEvent, Sport,Competition, Event, Currency
+from rasbet.models import *
 from rasbet import db
 from datetime import datetime
 import time
@@ -29,18 +29,11 @@ def loadApi():
                 novo = Participant(id=interveniente['id'],name=interveniente['name'])
                 db.session.add(novo)
                 db.session.commit()
-                
-            for comp in interveniente['competicao']:
-                part = ParticipantCompetition.query.filter_by(competition_id=comp,participant_id=interveniente['id']).first()
-                if not part:
-                    novo = ParticipantCompetition(competition_id=comp,participant_id=interveniente['id'])
-                    db.session.add(novo)
-                    db.session.commit()
         
         for evento in desporto['eventos']:
             event = Event.query.filter_by(id=evento['id']).first()
             if not event:
-                novo = Event(id=evento['id'],competition_id=evento['competicao'],start_date=datetime.strptime(evento['data'],'%Y-%m-%d').date(),end_date=datetime.strptime(evento['data'],'%Y-%m-%d').date(),state=evento['status']) # falta result
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=datetime.strptime(evento['data'],'%Y-%m-%d').date(),state=evento['status']) # falta result
                 db.session.add(novo)
             else:
                 event.state = evento['status']
@@ -57,13 +50,26 @@ def loadApi():
                     else:
                         result = -1
                 
-                partEvent = ParticipantEvent.query.filter_by(event_id=evento['id'],participant_id=participant)
-                if not partEvent:
-                    novo = ParticipantEvent(event_id=evento['id'],participant_id=participant,result=result)
-                    db.session.add(novo)
-                else:
-                    partEvent.result = result
                 db.session.commit()
+
+            if len(evento['odds']) == len(evento['intervenientes']):
+                i = 0
+                for odd in evento['odds']:
+                    novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
+                    db.session.add(novo)
+                    db.session.commit()
+                    i+=1
+            else:
+                novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
+                db.session.add(novo)
+                db.session.commit()
+                novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
+                db.session.add(novo)
+                db.session.commit()
+                novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
+                db.session.add(novo)
+                db.session.commit()
+
     
 
 def loadCurr():
@@ -88,7 +94,7 @@ def loadApiWorker():
         for evento in desporto['eventos']:
             event = Event.query.filter_by(id=evento['id']).first()
             if not event:
-                novo = Event(id=evento['id'],competition_id=evento['competicao'],start_date=evento['data'],end_date=evento['data'],state=evento['status']) # falta result
+                novo = Event(id=evento['id'],name=['name'],competition_id=evento['competicao'],start_date=evento['data'],state=evento['status']) # falta result
                 db.session.add(novo)
             else:
                 event.state = evento['status']
@@ -105,12 +111,24 @@ def loadApiWorker():
                     else:
                         result = -1
                 
-                partEvent = ParticipantEvent.query.filter_by(event_id=evento['id'],participant_id=participant)
-                if not partEvent:
-                    novo = ParticipantEvent(event_id=evento['id'],participant_id=participant,result=result)
+                db.session.commit()
+
+            if len(evento['odds']) == len(evento['intervenientes']):
+                i = 0
+                for odd in evento['odds']:
+                    novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
                     db.session.add(novo)
-                else:
-                    partEvent.result = result
+                    db.session.commit()
+                    i+=1
+            else:
+                novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
+                db.session.add(novo)
+                db.session.commit()
+                novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
+                db.session.add(novo)
+                db.session.commit()
+                novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
+                db.session.add(novo)
                 db.session.commit()
     
 def worker():

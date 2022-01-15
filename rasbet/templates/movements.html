@@ -4,7 +4,7 @@
 
 {% block content %}
 
-
+<div class="col-md-8 mx-auto">
 <div class="content-wrapper">
 
   <h2>Histórico de Movimentos</h2>
@@ -34,7 +34,7 @@
                                         {{ m.type }}
                                     </td>
                                     <td>
-                                        {{ m.value }}
+                                        {{ m.value|round(2)  }}
                                     </td>
                                     <td>
                                         {{ currencies[m.id] }}
@@ -50,5 +50,5 @@
         </div>
   </section>
 </div>
-
+</div>
 {% endblock %}>

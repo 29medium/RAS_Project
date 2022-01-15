@@ -74,7 +74,7 @@ class UpdateAccountForm(FlaskForm):
     address = StringField('Morada', validators=[DataRequired(), Length(max=100)])
     phone = StringField('Número de Telemóvel', validators=[DataRequired()])
     currency_fav = SelectField(u'Selecionar Moeda Preferida', choices=currencyList(), validators=[DataRequired()])
-    submit = SubmitField('Update')
+    submit = SubmitField('Atualizar')
 
     def validate_username(self, username):
         if username.data != current_user.username:
@@ -85,6 +85,21 @@ class UpdateAccountForm(FlaskForm):
         if email.data != current_user.email:
             if User.query.filter_by(email=email.data).first():
                 raise ValidationError('That email is taken. Please choose another one')
+    
+    def validate_cc(self, cc):
+        if cc.data != current_user.cc:
+            if User.query.filter_by(cc=cc.data).first():
+                raise ValidationError('That cc is taken. Please choose another one')
+
+    def validate_nif(self, nif):
+        if nif.data != current_user.nif:
+            if User.query.filter_by(nif=nif.data).first():
+                raise ValidationError('That nif is taken. Please choose another one')
+
+    def validate_phone(self, phone):
+        if phone.data != current_user.phone:
+            if User.query.filter_by(phone=phone.data).first():
+                raise ValidationError('That phone is taken. Please choose another one')
 
     def validate_birth_date(self, birth_date):
         max_date = datetime.datetime.now() - datetime.timedelta(days=18*365)
