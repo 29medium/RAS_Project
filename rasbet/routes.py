@@ -170,10 +170,10 @@ def bets(sport_id, competition_id):
             
             odd_ids.append(zOdd.id)
         if form.validate_on_submit():
-            bet.value = form.value.data
+            bet.value = int(form.value.data)
             bet.state = "Ativa"
             bet.date = datetime.now()
-            bet.currency_id = form.currency_id.data
+            bet.currency_id = int(form.currency_id.data)
 
             nova = Bet(state="Rascunho", odd=1, user_id=current_user.id)
             db.session.add(nova)
@@ -182,23 +182,24 @@ def bets(sport_id, competition_id):
                        type="Apostas",
                        date=datetime.now())
             db.session.add(mov)
-            
+            db.session.commit()
+   
+
             wallet=None
 
             for line in wallet_DB:
 
                 if line.user_id==current_user.id and line.currency_id==int(form.currency_id.data):
-                    print("vim aqui")
                     wallet=line
                     break
                
             
             #wallet = wallet_DB.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
-
+     
             wm = WalletMovement(movement_id=mov.id,
                             wallet_id=wallet.id)
             db.session.add(wm)
-            wallet.balance -= form.value.data
+            wallet.balance -= int(form.value.data)
             db.session.commit()
 
             flash('Aposta efetuada com sucesso')
@@ -276,7 +277,7 @@ def mybets():
     
     for bet in Bet.query.filter_by(user_id=current_user.id).all():
         if bet.state != "Rascunho":
-            cur = Currency.query().filter_by(id=bet.currency_id).first()
+            cur = Currency.query.filter_by(id=bet.currency_id).first()
             bets[bet] = cur.name + " (" + cur.symbol + ")"
 
     return render_template('mybets.html', title='Mybets', bets=bets, balance=balance, symbol=symbol, balances=balances)
