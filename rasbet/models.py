@@ -66,9 +66,10 @@ class WalletMovement(db.Model):
 
 class Bet(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
-    value = db.Column(db.Float, unique = False, nullable = False)
+    value = db.Column(db.Float, unique = False, nullable = True)
+    odd = db.Column(db.Float, unique = False, nullable = False)
     state = db.Column(db.String(20), unique = False, nullable = False)
-    date = db.Column(db.DateTime, nullable = False)
+    date = db.Column(db.DateTime, nullable = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id' ), nullable=False)
     bo = db.relationship("BetOdd")
 

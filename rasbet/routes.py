@@ -1,3 +1,4 @@
+from crypt import methods
 from locale import currency
 from flask import render_template, url_for, flash, redirect, request
 from rasbet import app, db, bcrypt
@@ -16,7 +17,7 @@ def home():
 
     return render_template('home.html', title='Bets', balance=balance, symbol=symbol)
 
-@app.route("/bets/<sport_id>/<competition_id>")
+@app.route("/bets/<sport_id>/<competition_id>", methods=['GET', 'POST'])
 def bets(sport_id, competition_id):
     balance = None
     symbol = None
@@ -46,15 +47,93 @@ def bets(sport_id, competition_id):
         events.append([ee, odd, p])
 
     if current_user.is_authenticated:
+        form = BetForm()
+
+        bet = Bet.query.filter_by(user_id=current_user.get_id(), state="Rascunho").first()
+        bet_odds = []
+        for bo in BetOdd.query.filter_by(bet_id=bet.id).all():
+            bet_odds.append(Odd.query.filter_by(id=bo.odd_id).first())
+
+        if form.validate_on_submit():
+            bet.value = form.value.data
+            bet.state = "Ativa"
+            bet.date = datetime.now()
+            db.session.commit()
+
+            nova = Bet(state="Rascunho", odd=1, user_id=current_user.id)
+            db.session.add(nova)
+            db.session.commit()
+            
+            mov = Movement(value=form.value.data,
+                       type="Apostas",
+                       date=datetime.now())
+            db.session.add(mov)
+            db.session.commit()
+
+            wallet = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
+
+            wm = WalletMovement(movement_id=mov.id,
+                            wallet_id=wallet.id)
+            db.session.add(wm)
+            wallet.balance -= form.value.data
+            db.session.commit()
+
+            flash('Aposta efetuada com sucesso')
+            return redirect(url_for('mybets'))
+
         return render_template('bets_logged_in.html', title='Bets', 
                                sport_id=sport_id, sport_name=sport_name, sports = sports, 
                                competition_id=competition_id, competition_name=competition_name, competitions=competitions,
-                               events = events, balance=balance, symbol=symbol)
+                               events = events, balance=balance, symbol=symbol, form=form, bet=bet, bet_odds=bet_odds)
     else:
         return render_template('bets_logged_out.html', title='Bets', 
                                sport_id=sport_id, sport_name=sport_name, sports = sports, 
                                competition_id=competition_id, competition_name=competition_name, competitions=competitions,
                                events = events, balance=balance, symbol=symbol)
+
+@app.route("/bets/odd/<sport_id>/<competition_id>/<odd_id>", methods=['GET', 'POST'])
+@login_required
+def odd(sport_id, competition_id, odd_id):
+    bet = Bet.query.filter_by(user_id=current_user.get_id(), state="Rascunho").first()
+
+    o_id = Odd.query.filter_by(id=odd_id).first()
+    e_id = Event.query.filter_by(id=o_id.event_id).first()
+
+    for bo in BetOdd.query.filter_by(bet_id=bet.id).all():
+        o = Odd.query.filter_by(id=bo.odd_id).first()
+        for e in Event.query.filter_by(id=o.event_id):
+            if e.id == e_id.id:
+                flash("Odd cannot be added", "danger")
+                return redirect(url_for('bets', sport_id=sport_id, competition_id=competition_id))
+
+    bet.odd *= o_id.value
+
+    betOdd = BetOdd(bet_id=bet.id, odd_id=odd_id)
+    db.session.add(betOdd)
+    db.session.commit()
+
+    flash("Odd added to the bet", "success")
+
+    return redirect(url_for('bets', sport_id=sport_id, competition_id=competition_id))
+
+@app.route("/mybets")
+@login_required
+def mybets():
+    balance = None
+    symbol = None
+    if current_user.is_authenticated:
+        balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+
+    bets = []
+    
+    for bet in Bet.query.filter_by(user_id=current_user.id).all():
+        if bet.state != "Rascunho":
+            bets.append(bet)
+
+    return render_template('mybets.html', title='Mybets', bets=bets, balance=balance, symbol=symbol)
+
+
 
 @app.route("/about")
 def about():
@@ -104,6 +183,10 @@ def register():
             wallet = Wallet(balance=0.0, user_id=user.id, currency_id=cur.id)
             print(wallet)
             db.session.add(wallet)
+        db.session.commit()
+
+        bet = Bet(state="Rascunho", odd=1, user_id=user.id)
+        db.session.add(bet)
         db.session.commit()
         
         flash('Your account has been created! You are now able to login', 'success')
@@ -327,3 +410,12 @@ def movements():
     movements.sort(reverse=True,key=ord_movements)
 
     return render_template('movements.html', title='Movemets', movements=movements, currencies=currencies, balance=balance, symbol=symbol)
+
+@app.route("/users")
+@login_required
+def users():
+    if current_user.role == "user":
+        return redirect(url_for('home'))
+    else:
+        users = User.query.all()
+    return render_template('users.html', title='Users', users=users)

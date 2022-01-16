@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block title %} Home {% endblock %}
+
+
+{% block content %}
+
+<div class="col-md-12">
+    <div class="content-wrapper">
+
+        <h2>Lista de utilizadores</h2>
+
+        <section class="content">
+            <div class="container-fluid">
+                <!-- /.row -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body table-responsive p-0">
+
+                                <table id="example2" class="table table-bordered table-hover"
+                                    style="margin: 0 !important;">
+                                    <thead class="bg-danger text-white">
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Data de Nascimento</th>
+                                            <th scope="col">NIF</th>
+                                            <th scope="col">CC</th>
+                                            <th scope="col">IBAN</th>
+                                            <th scope="col">Morada</th>
+                                            <th scope="col">Telemóvel</th>
+                                            <th scope="col">Tipo de Utilizador</th>
+                                            <th scope="col">Moeda Favorita</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for u in users %}
+                                        <tr>
+                                            <td>
+                                                {{ u.id }}
+                                            </td>
+                                            <td>
+                                                {{ u.username }}
+                                            </td>
+                                            <td>
+                                                {{ u.name }}
+                                            </td>
+                                            <td>
+                                                {{ u.email }}
+                                            </td>
+                                            <td>
+                                                {{ u.birth_date }}
+                                            </td>
+                                            <td>
+                                                {{ u.nif }}
+                                            </td>
+                                            <td>
+                                                {{ u.cc }}
+                                            </td>
+                                            <td>
+                                                {{ u.iban }}
+                                            </td>
+                                            <td>
+                                                {{ u.address }}
+                                            </td>
+                                            <td>
+                                                {{ u.phone }}
+                                            </td>
+                                            <td>
+                                                {{ u.role }}
+                                            </td>
+                                            <td>
+                                                {{ u.currency_fav }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}>
