@@ -29,6 +29,16 @@
       "id": 6,
       "question": "Onde posso verificar o histórico da minha conta?",
       "answer": "Para consultar as suas apostas carregue na opção ”Conta” no canto superior direito, e selecione a opção ”Movimentos”"
+    },
+    {
+      "id": 7,
+      "question": "Onde posso verificar o saldo da minha conta?",
+      "answer": "Poderá verificar o seu saldo geral no canto superior direito da nossa página. Poderá aceder à sua conta no canto superior direito também, se pretender aceder à sua carteira para depositar, levantar dinheiro ou consultar os seus movimentos. "
+    },
+    {
+      "id": 8,
+      "question": "Posso editar a minha conta?",
+      "answer": "Poderá alterar a sua conta selecionando a opção ”conta” no canto superior direito e optando pela opção ”Editar Conta” presente junto ás informações do seu perfil."
     }
     
   ]     

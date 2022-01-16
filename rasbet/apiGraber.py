@@ -13,7 +13,7 @@ def loadApi():
         if not desp:
             novo = Sport(id=desporto['id'],name=desporto['name'])
             db.session.add(novo)
-            db.session.commit()
+            
          
 
         for competicao in desporto['competicoes']:
@@ -21,14 +21,14 @@ def loadApi():
             if not comp:
                 novo = Competition(id=competicao['id'],name=competicao['name'],sport_id=desporto['id'])
                 db.session.add(novo)    
-                db.session.commit()
+                
 
         for interveniente in desporto['intervenientes']:
             part = Participant.query.filter_by(id=interveniente['id']).first()
             if not part:
                 novo = Participant(id=interveniente['id'],name=interveniente['name'])
                 db.session.add(novo)
-                db.session.commit()
+                
         
         for evento in desporto['eventos']:
             event = Event.query.filter_by(id=evento['id']).first()
@@ -37,7 +37,7 @@ def loadApi():
                 db.session.add(novo)
             else:
                 event.state = evento['status']
-            db.session.commit()
+            
 
             for participant in evento['intervenientes']:
                 if (datetime.now().date() < datetime.strptime(evento['data'],'%Y-%m-%d').date()):
@@ -49,27 +49,26 @@ def loadApi():
                         result = 1
                     else:
                         result = -1
-                
-                db.session.commit()
+            
 
             if len(evento['odds']) == len(evento['intervenientes']):
                 i = 0
                 for odd in evento['odds']:
                     novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
                     db.session.add(novo)
-                    db.session.commit()
+                    
                     i+=1
             else:
                 novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
                 db.session.add(novo)
-                db.session.commit()
+                
                 novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
                 db.session.add(novo)
-                db.session.commit()
+              
                 novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
                 db.session.add(novo)
-                db.session.commit()
 
+    db.session.commit()
     
 
 def loadCurr():
