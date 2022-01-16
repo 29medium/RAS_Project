@@ -15,13 +15,13 @@
         {
             "id":2,
             "name":"Bitcoin",
-            "symbol":"B",
+            "symbol":"BTC",
             "taxa":42911.80
         },
         {
             "id":3,
             "name":"Dogecoin",
-            "symbol":"D",
+            "symbol":"DOGE",
             "taxa":0.25
         },
         {

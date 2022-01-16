@@ -5,72 +5,195 @@ from rasbet import app, db, bcrypt
 from rasbet.forms import *
 from rasbet.models import *
 from flask_login import login_user, current_user, logout_user, login_required
+import json
 
 @app.route("/")
 @app.route("/home")
 def home():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
 
-    return render_template('home.html', title='Bets', balance=balance, symbol=symbol)
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
+
+    return render_template('home.html', title='Bets', balance=balance, symbol=symbol, balances=balances)
 
 @app.route("/bets/<sport_id>/<competition_id>", methods=['GET', 'POST'])
 def bets(sport_id, competition_id):
+    wallet_DB = Wallet.query.all()
+    currency_DB = Currency.query.all()
+    sport_DB = Sport.query.all()
+    competition_DB = Competition.query.all()
+    event_DB = Event.query.all()
+    participant_DB = Participant.query.all()
+    betOdd_DB = BetOdd.query.all()
+    odd_DB = Odd.query.all()
+
     balance = None
+    balances = {}
     symbol = None
+
+    
     if current_user.is_authenticated:
-        balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
-        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+        for line in wallet_DB:
+            if line.user_id==current_user.id and line.currency_id==current_user.currency_fav:
+                balance = round(line.balance,2)
+                break
+        
+        for line in currency_DB:
+            if line.id == current_user.currency_fav:
+                symbol = line.symbol
+                break
+        #symbol = currency_DB.filter_by(id=current_user.currency_fav).first().symbol
+        wallets = []
+        for line in wallet_DB:
+            if line.user_id == current_user.id:
+                wallets.append(line)
+                
+        #wallets = wallet_DB.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = None
+            for line in currency_DB:
+                if line.id == w.currency_id:
+                    cur = line
+                    break
+            #cur = currency_DB.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
 
     competition_name = None
-    sports = Sport.query.all()
+    
     events = []
     e = []
+    
+    sport_name = None
+    for line in sport_DB:
+        if line.id == int(sport_id):
+            sport_name = line.name
+            break
 
-    sport_name = Sport.query.filter_by(id=sport_id).first().name
-    competitions = Competition.query.filter_by(sport_id=sport_id).all()
+    #sport_name = sport_DB.filter_by(id=sport_id).first().name
+    competitions=[]
+    for line in competition_DB:
+        if line.sport_id==int(sport_id):
+            competitions.append(line)
+            
+    #competitions = competition_DB.filter_by(sport_id=sport_id).all()
     if competition_id == "-1":
         for c in competitions:
-            e += Event.query.filter_by(competition_id=c.id).all()
+            temp=[]
+            for line in event_DB:
+                if line.competition_id==c.id:
+                    temp.append(line)
+            e += temp
+            #e += event_DB.filter_by(competition_id=c.id).all()
     else:
-        competition_name = Competition.query.filter_by(id=competition_id).first().name
-        e = Event.query.filter_by(competition_id=competition_id).all()
+        competition_name = None
+        for line in competition_DB:
+            if line.id == int(competition_id):
+                competition_name = line.name
+                break
+
+        #competition_name = competition_DB.filter_by(id=competition_id).first().name
+
+        for line in event_DB:
+            if line.competition_id==int(competition_id):
+                e.append(line)
+                
+
+        
+        #e = event_DB.filter_by(competition_id=competition_id).all()
 
     for ee in e:
-        odd = Odd.query.filter_by(event_id=ee.id).all()
+        odd = []
+        for line in odd_DB:
+            if line.event_id==ee.id:
+                odd.append(line)
+
+                
+        #odd = Odd.query.filter_by(event_id=ee.id).all()
         p = []
         for o in odd:
-            p.append(Participant.query.filter_by(id=o.participant_id).first())
+            for line in participant_DB:
+                if line.id==o.participant_id:
+                    p.append(line)
+                    break
+            
+            #p.append(Participant.query.filter_by(id=o.participant_id).first())
+
         events.append([ee, odd, p])
+    
 
     if current_user.is_authenticated:
         form = BetForm()
 
         bet = Bet.query.filter_by(user_id=current_user.get_id(), state="Rascunho").first()
         bet_odds = []
-        for bo in BetOdd.query.filter_by(bet_id=bet.id).all():
-            bet_odds.append(Odd.query.filter_by(id=bo.odd_id).first())
+        odd_ids = []
+        
+        allbetods=[]
+        for line in betOdd_DB:
+            if line.bet_id==bet.id:
+                allbetods.append(line)
+        #for bo in betOdd_DB.filter_by(bet_id=bet.id).all():
+        for bo in allbetods:
+            zOdd = None
+            for line in odd_DB:
+                if line.id==bo.odd_id:
+                    zOdd=line
+                    break
+            #zOdd = Odd.query.filter_by(id=bo.odd_id).first()
+            
+            if zOdd.participant_id == None:
+                for line in event_DB:
+                    if line.id == zOdd.event_id:
+                        bet_odds.append((zOdd,line.name,"Empate"))
 
+                #bet_odds.append((zOdd,event_DB.filter_by(id=zOdd.event_id).first().name,"Empate"))
+            else:
+                for line in event_DB:
+                    if line.id == zOdd.event_id:
+                        for line2 in participant_DB:
+                            if line2.id == zOdd.participant_id: 
+                                bet_odds.append((zOdd,line.name,line2.name))
+                                break
+                        break
+                    
+            #bet_odds.append((zOdd,event_DB.filter_by(id=zOdd.event_id).first().name,participant_DB.filter_by(id=zOdd.participant_id).first().name))
+            
+            odd_ids.append(zOdd.id)
         if form.validate_on_submit():
             bet.value = form.value.data
             bet.state = "Ativa"
             bet.date = datetime.now()
-            db.session.commit()
+            bet.currency_id = form.currency_id.data
 
             nova = Bet(state="Rascunho", odd=1, user_id=current_user.id)
             db.session.add(nova)
-            db.session.commit()
             
             mov = Movement(value=form.value.data,
                        type="Apostas",
                        date=datetime.now())
             db.session.add(mov)
-            db.session.commit()
+            
+            wallet=None
 
-            wallet = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
+            for line in wallet_DB:
+
+                if line.user_id==current_user.id and line.currency_id==int(form.currency_id.data):
+                    print("vim aqui")
+                    wallet=line
+                    break
+               
+            
+            #wallet = wallet_DB.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
 
             wm = WalletMovement(movement_id=mov.id,
                             wallet_id=wallet.id)
@@ -82,14 +205,14 @@ def bets(sport_id, competition_id):
             return redirect(url_for('mybets'))
 
         return render_template('bets_logged_in.html', title='Bets', 
-                               sport_id=sport_id, sport_name=sport_name, sports = sports, 
+                               sport_id=sport_id, sport_name=sport_name, sports = sport_DB, 
                                competition_id=competition_id, competition_name=competition_name, competitions=competitions,
-                               events = events, balance=balance, symbol=symbol, form=form, bet=bet, bet_odds=bet_odds)
+                               events = events, balance=balance, symbol=symbol, balances=balances, form=form, bet=bet, bet_odds={"bet_odds":bet_odds,"odd_ids":odd_ids})
     else:
         return render_template('bets_logged_out.html', title='Bets', 
-                               sport_id=sport_id, sport_name=sport_name, sports = sports, 
+                               sport_id=sport_id, sport_name=sport_name, sports = sport_DB, 
                                competition_id=competition_id, competition_name=competition_name, competitions=competitions,
-                               events = events, balance=balance, symbol=symbol)
+                               events = events, balance=balance, symbol=symbol, balances=balances)
 
 @app.route("/bets/odd/<sport_id>/<competition_id>/<odd_id>", methods=['GET', 'POST'])
 @login_required
@@ -116,44 +239,84 @@ def odd(sport_id, competition_id, odd_id):
 
     return redirect(url_for('bets', sport_id=sport_id, competition_id=competition_id))
 
+@app.route("/bets/remove_odd/<sport_id>/<competition_id>/<odd_id>", methods=['GET', 'DELETE'])
+@login_required
+def remove_odd(sport_id, competition_id, odd_id):
+    bet = Bet.query.filter_by(user_id=current_user.get_id(), state="Rascunho").first()
+
+    bo = BetOdd.query.filter_by(bet_id=bet.id, odd_id=odd_id).first()
+
+    db.session.delete(bo)
+
+    bet.odd /= Odd.query.filter_by(id=odd_id).first().value
+
+    db.session.commit()
+
+    flash("Odd removed from the bet", "success")
+
+    return redirect(url_for('bets', sport_id=sport_id, competition_id=competition_id))
+
 @app.route("/mybets")
 @login_required
 def mybets():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
 
-    bets = []
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
+
+    bets = {}
     
     for bet in Bet.query.filter_by(user_id=current_user.id).all():
         if bet.state != "Rascunho":
-            bets.append(bet)
+            cur = Currency.query().filter_by(id=bet.currency_id).first()
+            bets[bet] = cur.name + " (" + cur.symbol + ")"
 
-    return render_template('mybets.html', title='Mybets', bets=bets, balance=balance, symbol=symbol)
+    return render_template('mybets.html', title='Mybets', bets=bets, balance=balance, symbol=symbol, balances=balances)
 
 
 
 @app.route("/about")
 def about():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
         
-    return render_template('about.html', title='About', balance=balance, symbol=symbol)
+    return render_template('about.html', title='About', balance=balance, symbol=symbol, balances=balances)
 
 @app.route("/faq")
 def faq():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
         
-    return render_template('faq.html', title='FAQ', balance=balance, symbol=symbol)
+    data=json.load(open('rasbet/files/faq.json'))
+    return render_template('faq.html', title='FAQ', balance=balance, symbol=symbol, balances=balances, data=data)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -181,7 +344,6 @@ def register():
         currencies = Currency.query.all()
         for cur in currencies:
             wallet = Wallet(balance=0.0, user_id=user.id, currency_id=cur.id)
-            print(wallet)
             db.session.add(wallet)
         db.session.commit()
 
@@ -238,10 +400,17 @@ def account():
 @login_required
 def update():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
 
     form = UpdateAccountForm()
 
@@ -271,16 +440,23 @@ def update():
         form.currency_fav.data = current_user.currency_fav
         form.phone.data = current_user.phone
     
-    return render_template('update.html', title='Update', form=form, balance=balance, symbol=symbol)
+    return render_template('update.html', title='Update', form=form, balance=balance, balances=balances, symbol=symbol)
 
 @app.route("/account/deposit", methods=['GET', 'POST'])
 @login_required
 def deposit():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
 
     form = DepositForm()
 
@@ -302,16 +478,23 @@ def deposit():
         flash('Depósito efetuado com sucesso')
         return redirect(url_for('account'))
 
-    return render_template('deposit.html', title='Deposit', form=form, balance=balance, symbol=symbol)
+    return render_template('deposit.html', title='Deposit', form=form, balance=balance, balances=balances, symbol=symbol)
 
 @app.route("/account/cashout", methods=['GET', 'POST'])
 @login_required
 def cashout():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
         
     form = CashOutForm()
 
@@ -333,16 +516,23 @@ def cashout():
         flash('Levantamento efetuado com sucesso')
         return redirect(url_for('account'))
 
-    return render_template('cashout.html', title='Cashout', form=form, balance=balance, symbol=symbol)
+    return render_template('cashout.html', title='Cashout', form=form, balance=balance, balances=balances, symbol=symbol)
 
 @app.route("/account/convert", methods=['GET', 'POST'])
 @login_required
 def convert():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
         
     form = ConvertForm()
 
@@ -385,7 +575,7 @@ def convert():
 
         return redirect(url_for('account'))
 
-    return render_template('convert.html', title='Convert', form=form, balance=balance, symbol=symbol)
+    return render_template('convert.html', title='Convert', form=form, balance=balance, balances=balances, symbol=symbol)
 
 def ord_movements(m):
     return m.id
@@ -393,10 +583,17 @@ def ord_movements(m):
 @app.route("/account/movements")
 def movements():
     balance = None
+    balances = {}
     symbol = None
     if current_user.is_authenticated:
         balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
         symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
         
     movements = []
     currencies = {}
@@ -409,7 +606,7 @@ def movements():
 
     movements.sort(reverse=True,key=ord_movements)
 
-    return render_template('movements.html', title='Movemets', movements=movements, currencies=currencies, balance=balance, symbol=symbol)
+    return render_template('movements.html', title='Movemets', movements=movements, currencies=currencies, balance=balance, symbol=symbol, balances=balances)
 
 @app.route("/users")
 @login_required
@@ -418,4 +615,56 @@ def users():
         return redirect(url_for('home'))
     else:
         users = User.query.all()
-    return render_template('users.html', title='Users', users=users)
+    
+    balance = None
+    balances = {}
+    symbol = None
+    if current_user.is_authenticated:
+        balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
+
+    
+    return render_template('users.html', title='Users', users=users, balance=balance, symbol=symbol, balances=balances)
+
+@app.route("/allEvents", methods=['GET', 'POST'])
+@login_required
+def events():
+    if current_user.role == "user":
+        return redirect(url_for('home'))
+    else:
+        events = Event.query.all()
+
+    balance = None
+    balances = {}
+    symbol = None
+    if current_user.is_authenticated:
+        balance = round(Wallet.query.filter_by(user_id=current_user.id,currency_id=current_user.currency_fav).first().balance, 2)
+        symbol = Currency.query.filter_by(id=current_user.currency_fav).first().symbol
+                
+        wallets = Wallet.query.filter_by(user_id=current_user.id).all()
+
+        for w in wallets:
+            cur = Currency.query.filter_by(id=w.currency_id).first()
+            balances[cur.name]= str(round(w.balance, 2)) + " " + cur.symbol
+
+    return render_template('allEvents.html', title='AllEvents', events=events, balance=balance, symbol=symbol, balances=balances)
+
+@app.route("/allEvents/event/<event_id>/<status>")
+@login_required
+def event(event_id, status):
+    if current_user.role == "user":
+        return redirect(url_for('home'))
+    else:
+        event = Event.query.filter_by(id=event_id).first()
+
+        event.state  = str(status)
+
+        db.session.commit()
+
+        return redirect(url_for('events'))

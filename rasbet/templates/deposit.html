@@ -5,7 +5,19 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Depositar</legend>
+                <section class="content-header">
+                    <div class="row">
+                        <div class="col-6" style="align-self: flex-end;">
+                            <legend class="border-bottom mb-4">Depositar</legend>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="float-sm-right">
+                              <a href="##" onClick="history.go(-1); return false;"><button class="btn btn-danger" type="button">voltar</button></a>
+                            </div>
+                        </div>
+                    </div>
+                  </section>
+
                 <div class="form-group">
                     {{ form.value.label(class="form-control-label") }}
 
@@ -36,7 +48,7 @@
                 </div>
             </fieldset>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.submit(class="btn btn-danger") }}
             </div>
         </form>
     </div>

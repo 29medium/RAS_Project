@@ -43,6 +43,7 @@ class Currency(db.Model):
     convertion_rate = db.Column(db.Float, nullable = False)
     wallets = db.relationship("Wallet")
     users = db.relationship("User")
+    bet = db.relationship("Bet")
 
     def __repr__(self):
         return f"Currency('{self.name}', '{self.conversion_rate}')"
@@ -70,6 +71,7 @@ class Bet(db.Model):
     odd = db.Column(db.Float, unique = False, nullable = False)
     state = db.Column(db.String(20), unique = False, nullable = False)
     date = db.Column(db.DateTime, nullable = True)
+    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id' ), nullable=False)
     bo = db.relationship("BetOdd")
 

@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block title %} Home {% endblock %}
+
+
+{% block content %}
+
+<div class="col-md-12">
+    <div class="content-wrapper">
+
+        <h2>Eventos atuais</h2>
+
+        <section class="content">
+            <div class="container-fluid">
+                <!-- /.row -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body table-responsive p-0">
+                                <table id="example2" class="table table-bordered table-hover"
+                                    style="margin: 0 !important;">
+                                    <thead class="bg-danger text-white">
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col">Data</th>
+                                            <th scope="col">Estado atual</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for e in events %}
+                                        <tr>
+                                            <td>
+                                                {{ e.id }}
+                                            </td>
+                                            <td>
+                                                {{ e.name }}
+                                            </td>
+                                            <td>
+                                                {{ e.start_date }}
+                                            </td>
+                                            <td>
+                                                {{ e.state }}
+                                            </td>
+                                            <td>
+                                                {% if e.state == "0" %}
+                                                    <div class="row" style="padding-top: 20px; margin-left: 40px ">
+                                                        <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">
+                                                            <a href="{{url_for('event', event_id=e.id, status=3)}}"> <button type="button" class="btn btn-danger">Suspender</button></a>                                                                
+                                                        </div>
+                                                        <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">
+                                                            <a href="{{url_for('event', event_id=e.id, status=4)}}" ><button type="button" class="btn btn-danger">Cancelar</button></a>
+                                                        </div>                                                        
+                                                    </div>
+                                                {% elif e.state == "3" %}
+                                                    <div class="row" style="padding-top: 20px; margin-left: 40px ">
+                                                        <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">
+                                                            <a href="{{url_for('event', event_id=e.id, status=0)}}"><button type="button" class="btn btn-danger">Ativar</button></a>
+                                                        </div>
+                                                        <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">
+                                                            <a href="{{url_for('event', event_id=e.id, status=3)}}"> <button type="button" class="btn btn-danger">Cancelar</button></a>                                                                
+                                                        </div>                                                        
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}>

@@ -24,6 +24,3 @@ workerThread.daemon = True
 workerThread.start()
 
 import rasbet.routes
-
-
-

@@ -3,17 +3,17 @@
 
 
 {% block content %}
-
-<div class="col-md-8 mx-auto">
+<div class="row">
+<div class="col-md-9 mx-auto">
   <div class="content-wrapper">
 
-    <h2>Apostas</h2>
 
     <section class="content-header" style="padding-top:20px ">
       <div class="row">
-        <div class="col-2.5" style="align-self: flex-end;">
+        <h2 style="padding-left: 30px">Apostas</h2>
+        <div class="col-2.5" style="align-self: flex-end; padding-left:30px">
           <div big class="dropdown">
-            <button class="btn btn-warning dropdown-toggle btn-lg" type="button" id="dropdownMenuButton"
+            <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{ sport_name }}
             </button>
@@ -26,7 +26,7 @@
         </div>
         <div class="col-3" style="align-self: flex-end;">
           <div big class="dropdown">
-            <button class="btn btn-warning dropdown-toggle btn-lg" type="button" id="dropdownMenuButton"
+            <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% if competition_id != "-1" %}
               {{ competition_name }}
@@ -66,24 +66,32 @@
                   {% for ee, odd, p in events %}
                   <tr>
                     <td>{{ p[0].name }}</td>
-                    <td>{{ p[2].name }}</td>
+                    <td>{{ p[1].name }}</td>
                     <td>
-                      <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
-                        autocomplete="off" href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[0].id) }}">
-                        {{ odd[0].value }}
-                      </button>
-                      <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
-                        autocomplete="off" href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[1].id) }}">
-                        {{ odd[1].value }}
-                      </button>
-                      <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
-                        autocomplete="off" href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[2].id) }}">
-                        {{ odd[2].value }}
-                      </button>
+                      
+                      {% for i in range(3) %}
+                      {% if odd[i].id in bet_odds['odd_ids'] %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('remove_odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[i].id) }}" class="btn btn-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[i].value }}
+                          </a>
+                        </div>
+                        {% else %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[i].id) }}" class="btn btn-outline-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[i].value }}
+                          </a>
+                        </div>
+                      {% endif %}
+                      {% endfor %}
+
+
+                    
                     </td>
                     <td>{{ ee.start_date }}</td>
                     <td>{{ ee.state }}</td>
                   </tr>
+                  
                   {% endfor %}
                 </tbody>
                 {% elif sport_id == "1" %}
@@ -103,10 +111,21 @@
                     <td>{{ p[i].name }}</td>
                     <td>{{ ee.name }}</td>
                     <td>
-                      <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
-                        autocomplete="off">
-                        {{ odd[i].value }}
-                      </button>
+
+                      {% if odd[i].id in bet_odds['odd_ids'] %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('remove_odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[i].id) }}" class="btn btn-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[i].value }}
+                          </a>
+                        </div>
+                        {% else %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[i].id) }}" class="btn btn-outline-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[i].value }}
+                          </a>
+                        </div>
+                      {% endif %}
+
                     </td>
                     <td>{{ ee.start_date }}</td>
                     <td>{{ ee.state }}</td>
@@ -130,14 +149,34 @@
                     <td>{{ p[0].name }}</td>
                     <td>{{ p[1].name }}</td>
                     <td>
-                      <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
-                        autocomplete="off">
-                        {{ odd[0].value }}
-                      </button>
-                      <button type="button" class="btn btn-outline-danger" data-toggle="button" aria-pressed="false"
-                        autocomplete="off">
-                        {{ odd[1].value }}
-                      </button>
+                      {% if odd[0].id in bet_odds['odd_ids'] %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('remove_odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[0].id) }}" class="btn btn-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[0].value }}
+                          </a>
+                        </div>
+                        {% else %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[0].id) }}" class="btn btn-outline-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[0].value }}
+                          </a>
+                        </div>
+                      {% endif %}
+                        
+                      {% if odd[1].id in bet_odds['odd_ids'] %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('remove_odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[1].id) }}" class="btn btn-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[1].value }}
+                          </a>
+                        </div>
+                        {% else %}
+                        <div class="btn-group">
+                          <a href="{{ url_for('odd', sport_id=sport_id, competition_id=competition_id, odd_id=odd[1].id) }}" class="btn btn-outline-danger">
+                              <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i> {{ odd[1].value }}
+                          </a>
+                        </div>
+                      {% endif %}
+
                     </td>
                     <td>{{ ee.start_date }}</td>
                     <td>{{ ee.state }}</td>
@@ -154,15 +193,21 @@
   </div>
 </div>
 
-<div class="col-md-4 mx-auto">
+<div class="col-md-23 mx-auto">
   <div class="header">
     <h3>Carrinho</h3>
   </div>
   <div class="content-section">
     <p class='text-muted'>Apostas Selecionadas
       <ul class="list-group">
-        {% for odd in bet_odds %}
-        <li class="list-group-item list-group-item-light">{{ odd.value }} {{ odd.participant}} </li>
+        {% for odd in bet_odds['bet_odds'] %}
+        <li class="list-group-item list-group-item-light">
+          <div class = "card">
+            <div class="small text-muted">{{ odd[1]}}</div>
+            <div class="small text-muted">ODD : {{ odd[0].value }}</div>
+            <div class="small text-muted">Aposta: {{odd[2]}}</div>
+          </div>
+        </li>
         {% endfor %}
       </ul>
     </p>
@@ -207,5 +252,5 @@
     </div>
   </div>
 </div>
-
+</div>
 {% endblock %}

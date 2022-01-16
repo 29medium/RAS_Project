@@ -8,11 +8,11 @@ from rasbet.models import *
 import datetime
 
 def currencyList():
-    currencies = Currency.query.with_entities(Currency.id, Currency.name).all()
+    currencies = Currency.query.with_entities(Currency.id, Currency.name, Currency.symbol).all()
     choices = list()
 
     for c in currencies:
-        choices.append((c.id, c.name))
+        choices.append((c.id, c.name + " (" + c.symbol + ")"))
 
     return choices
 

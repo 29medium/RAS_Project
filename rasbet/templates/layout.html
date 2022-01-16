@@ -31,6 +31,7 @@
                 {% endif %}
                 {% if current_user.role == "admin" %}
                 <a class="nav-item nav-link" href="{{ url_for('users') }}">Utilizadores</a>
+                <a class="nav-item nav-link" href="{{ url_for('events') }}">Gerir Apostas</a>
                 {% endif %}
                 <a class="nav-item nav-link" href="{{ url_for('about') }}">Sobre</a>
                 <a class="nav-item nav-link" href="{{ url_for('faq') }}">FAQ</a>
@@ -38,7 +39,18 @@
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                <a class="nav-item nav-link">Saldo: {{ balance }} {{ symbol }}</a>
+
+                <div class="navbar-form">
+                  <div class="btn-group">
+                      <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">Saldo: {{ balance }} {{ symbol }}<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        {% for key in balances.keys() %}
+                        <li style="padding-left:3px ;" >{{ key }}: {{ balances[key] }}</li>
+                        {% endfor %}
+                      </ul>
+                  </div>
+              </div>
+                
                 <a class="nav-item nav-link" href="{{ url_for('account') }}">Conta</a>
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                 {% else %}
@@ -52,7 +64,7 @@
     </header>
 
     <main role="main" class="content-section">
-      <div class="container">
+      <div class="container col-md-12">
 
               {% with messages = get_flashed_messages(with_categories=true) %} 
               {% if messages %}

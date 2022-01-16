@@ -7,13 +7,13 @@
 <div class="col-md-10 mx-auto">
     <div class="content-wrapper">
 
-        <h2>Apostas</h2>
+        <h2 style="padding-left: 30px">Apostas</h2>
 
-        <section class="content-header" style="padding-top:20px ">
+        <section class="content-header" style="padding-top:20px; padding-left: 30px ">
             <div class="row">
                 <div class="col-2.5" style="align-self: flex-end;">
                     <div big class="dropdown">
-                        <button class="btn btn-warning dropdown-toggle btn-lg" type="button" id="dropdownMenuButton"
+                        <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ sport_name }}
                         </button>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="col-3" style="align-self: flex-end;">
                     <div big class="dropdown">
-                        <button class="btn btn-warning dropdown-toggle btn-lg" type="button" id="dropdownMenuButton"
+                        <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if competition_id != "-1" %}
                             {{ competition_name }}
@@ -68,7 +68,7 @@
                                     {% for ee, odd, p in events %}
                                     <tr>
                                         <td>{{ p[0].name }}</td>
-                                        <td>{{ p[2].name }}</td>
+                                        <td>{{ p[1].name }}</td>
                                         <td>
                                             <button type="button" class="btn btn-outline-danger">
                                                 {{ odd[0].value }}

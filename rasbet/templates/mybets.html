@@ -19,23 +19,32 @@
                               <thead class="p-3 mb-2 bg-danger text-white">
                                 <tr>
                                   <th scope="col">Id</th>
-                                  <th scope="col">Montante</th>
                                   <th scope="col">Odd</th>
+                                  <th scope="col">Montante</th>
+                                  <th scope="col">Possíveis Ganhos</th>
+                                  <th scope="col">Moeda</th>
                                   <th scope="col">Estado</th>
                                   <th scope="col">Data</th>
+                                  
                                 </tr>
                               </thead>
                               <tbody>
-                                {% for b in bets %}
+                                {% for b in bets.keys() %}
                                 <tr>
                                     <td>
                                         {{ b.id }}
                                     </td>
                                     <td>
-                                        {{ b.value }}
+                                        {{ b.odd|round(2) }}
                                     </td>
                                     <td>
-                                        {{ b.odd  }}
+                                        {{ b.value|round(2) }}
+                                    </td>
+                                    <td>
+                                        {{ (b.value * b.odd)|round(2) }}
+                                    </td>
+                                    <td>
+                                        {{ bets[b] }}
                                     </td>
                                     <td>
                                         {{ b.state }}

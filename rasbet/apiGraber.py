@@ -54,20 +54,35 @@ def loadApi():
             if len(evento['odds']) == len(evento['intervenientes']):
                 i = 0
                 for odd in evento['odds']:
-                    novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
-                    db.session.add(novo)
-                    
+                    t = Odd.query.filter_by(participant_id=evento['intervenientes'][i],event_id=evento['id']).first()
+                    if not t:
+                        novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
+                        db.session.add(novo)
+                    else:
+                        t.value = odd
                     i+=1
             else:
-                novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
-                db.session.add(novo)
+                t = Odd.query.filter_by(participant_id=evento['intervenientes'][0],event_id=evento['id']).first()
+                if not t:
+                    novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
+                    db.session.add(novo)
+                else:
+                    t.value = evento['odds'][0]
+                    
+                t = Odd.query.filter_by(participant_id=None,event_id=evento['id']).first()
+                if not t:
+                    novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
+                    db.session.add(novo)
+                else:
+                    t.value=evento['odds'][1]
                 
-                novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
-                db.session.add(novo)
-              
-                novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
-                db.session.add(novo)
-
+                t = Odd.query.filter_by(participant_id=evento['intervenientes'][1],event_id=evento['id']).first()
+                if not t:
+                    novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
+                    db.session.add(novo)
+                else:
+                    t.value = evento['odds'][2]
+                    
     db.session.commit()
     
 
@@ -95,9 +110,9 @@ def loadApiWorker():
             if not event:
                 novo = Event(id=evento['id'],name=['name'],competition_id=evento['competicao'],start_date=evento['data'],state=evento['status']) # falta result
                 db.session.add(novo)
-            else:
+            elif event.state!=3 and event.state!=4:
                 event.state = evento['status']
-            db.session.commit()
+            
 
             for participant in evento['intervenientes']:
                 if (datetime.now().date() < datetime.strptime(evento['data'],'%Y-%m-%d').date()):
@@ -110,25 +125,40 @@ def loadApiWorker():
                     else:
                         result = -1
                 
-                db.session.commit()
-
+                
             if len(evento['odds']) == len(evento['intervenientes']):
                 i = 0
                 for odd in evento['odds']:
-                    novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
-                    db.session.add(novo)
-                    db.session.commit()
+                    t = Odd.query.filter_by(participant_id=evento['intervenientes'][i],event_id=evento['id']).first()
+                    if not t:
+                        novo = Odd(value=odd,participant_id=evento['intervenientes'][i],event_id=evento['id'])
+                        db.session.add(novo)
+                    else:
+                        t.value=odd
+
                     i+=1
             else:
-                novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
-                db.session.add(novo)
-                db.session.commit()
-                novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
-                db.session.add(novo)
-                db.session.commit()
-                novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
-                db.session.add(novo)
-                db.session.commit()
+                t = Odd.query.filter_by(participant_id=evento['intervenientes'][0],event_id=evento['id']).first()
+                if not t:
+                    novo = Odd(value=evento['odds'][0],participant_id=evento['intervenientes'][0],event_id=evento['id'])
+                    db.session.add(novo)
+                else:
+                    t.value=evento['odds'][0]
+                    
+                t = Odd.query.filter_by(participant_id=None,event_id=evento['id']).first()
+                if not t:
+                    novo = Odd(value=evento['odds'][1],participant_id=None,event_id=evento['id'])
+                    db.session.add(novo)
+                else:
+                    t.value=evento['odds'][1]
+
+                t = Odd.query.filter_by(participant_id=evento['intervenientes'][1],event_id=evento['id']).first()
+                if not t:
+                    novo = Odd(value=evento['odds'][2],participant_id=evento['intervenientes'][1],event_id=evento['id'])
+                    db.session.add(novo)
+                else:
+                    t.value=evento['odds'][2]
+    db.session.commit()
     
 def worker():
     while True:
