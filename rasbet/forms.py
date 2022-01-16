@@ -115,8 +115,10 @@ class DepositForm(FlaskForm):
     def validate_value(self, value):
         if value.data < 0:
             raise ValidationError(f'O levantamento tem de ser de um valor positivo')
-        elif value.data < 10:
-            raise ValidationError(f'O depósito minimo é 10 {Currency.query.filter_by(id=self.currency_id.data).first().name}')
+        else:
+            min = 10 / Currency.query.filter_by(id=self.currency_id.data).first().convertion_rate
+            if value.data < min:
+                raise ValidationError(f'O depósito minimo é {min} {Currency.query.filter_by(id=self.currency_id.data).first().name}')
 
 class CashOutForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
