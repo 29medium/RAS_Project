@@ -59,7 +59,6 @@
                     <th scope="col">Equipa 2</th>
                     <th>Odd</th>
                     <th scope="col">Data</th>
-                    <th scope="col">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -89,7 +88,6 @@
                     
                     </td>
                     <td>{{ ee.start_date }}</td>
-                    <td>{{ ee.state }}</td>
                   </tr>
                   
                   {% endfor %}
@@ -101,7 +99,6 @@
                     <th scope="col">Corrida</th>
                     <th>Odd</th>
                     <th scope="col">Data</th>
-                    <th scope="col">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -128,7 +125,6 @@
 
                     </td>
                     <td>{{ ee.start_date }}</td>
-                    <td>{{ ee.state }}</td>
                   </tr>
                   {% endfor %}
                   {% endfor %}
@@ -140,7 +136,6 @@
                     <th scope="col">Jogador 2</th>
                     <th>Odd</th>
                     <th scope="col">Data</th>
-                    <th scope="col">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -179,7 +174,6 @@
 
                     </td>
                     <td>{{ ee.start_date }}</td>
-                    <td>{{ ee.state }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -206,6 +200,13 @@
             <div class="small text-muted">{{ odd[1]}}</div>
             <div class="small text-muted">ODD : {{ odd[0].value }}</div>
             <div class="small text-muted">Aposta: {{odd[2]}}</div>
+            <div class="col-sm-16">
+              <div class="float-sm-right">
+                <a href="##"><button class="btn btn-light btn-sm" type="button">
+                  <div style='text-align:center;'><i class="fa fa-trash"></i></div>
+                </button></a>
+              </div>
+          </div>
           </div>
         </li>
         {% endfor %}

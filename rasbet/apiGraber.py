@@ -1,7 +1,7 @@
 import json
 from rasbet.models import *
-from rasbet import db
-from datetime import datetime
+from rasbet import db, bcrypt
+from datetime import datetime, timedelta
 import time
 
 def loadApi():
@@ -33,16 +33,21 @@ def loadApi():
         for evento in desporto['eventos']:
             event = Event.query.filter_by(id=evento['id']).first()
             if not event:
-                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=datetime.strptime(evento['data'],'%Y-%m-%d').date(),state=evento['status']) # falta result
+                start_date = datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')
+                if start_date > datetime.now():
+                    state = 0
+                elif start_date + timedelta(minutes=30) < datetime.now():
+                    state = 2
+                else:
+                    state = 1
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=30), state=state) # falta result
                 db.session.add(novo)
-            else:
-                event.state = evento['status']
             
 
             for participant in evento['intervenientes']:
-                if (datetime.now().date() < datetime.strptime(evento['data'],'%Y-%m-%d').date()):
+                if (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')):
                     result = -2
-                elif evento['status'] == 2:
+                elif ((datetime.now() > datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')) and (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M') + timedelta(minutes=30))):
                     if evento['resultado'] == -1:
                         result = 0
                     elif evento['resultado'] == participant:
@@ -108,16 +113,21 @@ def loadApiWorker():
         for evento in desporto['eventos']:
             event = Event.query.filter_by(id=evento['id']).first()
             if not event:
-                novo = Event(id=evento['id'],name=['name'],competition_id=evento['competicao'],start_date=evento['data'],state=evento['status']) # falta result
+                start_date = datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')
+                if start_date > datetime.now():
+                    state = 0
+                elif start_date + timedelta(minutes=30) < datetime.now():
+                    state = 2
+                else:
+                    state = 1
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=30) ,state=state) # falta result
                 db.session.add(novo)
-            elif event.state!=3 and event.state!=4:
-                event.state = evento['status']
             
 
             for participant in evento['intervenientes']:
-                if (datetime.now().date() < datetime.strptime(evento['data'],'%Y-%m-%d').date()):
+                if (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')):
                     result = -2
-                elif evento['status'] == 2:
+                elif ((datetime.now() > datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')) and (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M') + timedelta(minutes=30))):
                     if evento['resultado'] == -1:
                         result = 0
                     elif evento['resultado'] == participant:
@@ -169,3 +179,29 @@ def worker():
 def loadAllApi():
     loadApi()
     loadCurr()
+
+    user = User.query.filter_by(username="admin").first()
+    if not user:
+        hashed_password = bcrypt.generate_password_hash("admin").decode('utf-8')
+        admin = User(username="admin",
+                    name="admin",
+                    email="admin@test.com", 
+                    password=hashed_password,
+                    birth_date= datetime.strptime("2000-01-02", "%Y-%m-%d"),
+                    nif="123456789",
+                    cc="12345678",
+                    iban="1234567890123456789012345",
+                    address="Rua do Administrador",
+                    phone="123456789",
+                    currency_fav=0,
+                    role="admin")
+        db.session.add(admin)
+
+        currencies = Currency.query.all()
+        for cur in currencies:
+            wallet = Wallet(balance=0.0, user_id=admin.id, currency_id=cur.id)
+            db.session.add(wallet)
+
+        bet = Bet(state="Rascunho", odd=1, user_id=admin.id)
+        db.session.add(bet)
+        db.session.commit()

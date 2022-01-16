@@ -40,7 +40,17 @@
                                                 {{ e.start_date }}
                                             </td>
                                             <td>
-                                                {{ e.state }}
+                                                {% if e.state == "0" %}
+                                                Ativo
+                                                {% elif e.state == "1" %}
+                                                A decorrer
+                                                {% elif e.state == "2" %}
+                                                Concluido
+                                                {% elif e.state == "3" %}
+                                                Suspenso
+                                                {% elif e.state == "4" %}
+                                                Cancelado
+                                                {% endif %}
                                             </td>
                                             <td>
                                                 {% if e.state == "0" %}
@@ -52,6 +62,15 @@
                                                             <a href="{{url_for('event', event_id=e.id, status=4)}}" ><button type="button" class="btn btn-danger">Cancelar</button></a>
                                                         </div>                                                        
                                                     </div>
+                                                {% elif e.state == "1" %}
+                                                <div class="row" style="padding-top: 20px; margin-left: 40px ">
+                                                    <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">
+                                                        <a href="{{url_for('event', event_id=e.id, status=2)}}"> <button type="button" class="btn btn-danger">Concluir</button></a>                                                                
+                                                    </div>
+                                                    <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">
+                                                        <a href="{{url_for('event', event_id=e.id, status=3)}}"> <button type="button" class="btn btn-danger">Cancelar</button></a> 
+                                                    </div>
+                                                </div>
                                                 {% elif e.state == "3" %}
                                                     <div class="row" style="padding-top: 20px; margin-left: 40px ">
                                                         <div class="button text-center" style="padding-left: 10px; padding-bottom: 10px">

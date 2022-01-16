@@ -31,7 +31,7 @@ def bets(sport_id, competition_id):
     currency_DB = Currency.query.all()
     sport_DB = Sport.query.all()
     competition_DB = Competition.query.all()
-    event_DB = Event.query.all()
+    event_DB = Event.query.filter_by(state=0).all()
     participant_DB = Participant.query.all()
     betOdd_DB = BetOdd.query.all()
     odd_DB = Odd.query.all()
@@ -466,7 +466,6 @@ def deposit():
                        type="Depósito",
                        date=datetime.now())
         db.session.add(mov)
-        db.session.commit()
 
         wallet = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
 
@@ -504,7 +503,6 @@ def cashout():
                        type="Levantamento",
                        date=datetime.now())
         db.session.add(mov)
-        db.session.commit()
 
         wallet = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
 
@@ -542,7 +540,6 @@ def convert():
                        type="Valor a converter",
                        date=datetime.now())
         db.session.add(mov_out)
-        db.session.commit()
 
         wallet_out = Wallet.query.filter_by(user_id=current_user.id, currency_id=form.currency_id_out.data).first()
         
@@ -564,7 +561,6 @@ def convert():
                        date=datetime.now())
 
         db.session.add(mov_in)
-        db.session.commit()
     
         wm_in = WalletMovement(movement_id=mov_in.id,
                             wallet_id=wallet_in.id)
@@ -663,9 +659,63 @@ def event(event_id, status):
         return redirect(url_for('home'))
     else:
         event = Event.query.filter_by(id=event_id).first()
-
         event.state  = str(status)
-
         db.session.commit()
+
+        if event.state==3 or event.state==4 or event.state==1:
+            odds = Odd.query.filter_by(event_id=event_id).all()
+            betodds = []
+            for o in odds:
+                betodds += BetOdd.query.filter_by(odd_id=o.id).all()
+
+            for bo in betodds:
+                bet = Bet.query.filter_by(id=bo.bet_id).first()
+                
+                if event.state==1:
+                    change = True
+
+                    this_bet_odds = Bet.query.filter_by(bet_id=bet.id).all()
+                    this_odds = []
+                    for tbo in this_bet_odds:
+                        this_odds += Odd.query.filter_by(id=tbo.odd_id).all()
+                    for to in this_odds:
+                        if Event.query.filter_by(id=to.event_id).first().state != 2:
+                            change = False 
+
+                    if change:
+                        bet.state = "Concluida"
+
+                        mov = Movement(value=bet.value*bet.odd,
+                                    type="Aposta Concluida",
+                                    date=datetime.now())
+                        db.session.add(mov)
+
+                        wallet = Wallet.query.filter_by(user_id=bet.user_id, currency_id=bet.currency_id).first()
+
+                        wm = WalletMovement(movement_id=mov.id,
+                                wallet_id=wallet.id)
+                        db.session.add(wm)
+
+                        wallet.balance += bet.value * bet.odd
+                elif event.state==3:
+                    bet.state = "Suspensa"
+                elif event.state==4:
+                    bet.state = "Cancelada"
+
+                    mov = Movement(value=bet.value,
+                                   type="Aposta Cancelada",
+                                   date=datetime.now())
+                    db.session.add(mov)
+
+                    wallet = Wallet.query.filter_by(user_id=bet.user_id, currency_id=bet.currency_id).first()
+
+                    wm = WalletMovement(movement_id=mov.id,
+                            wallet_id=wallet.id)
+                    db.session.add(wm)
+
+                    wallet.balance += bet.value
+                    
+            db.session.commit()
+        
 
         return redirect(url_for('events'))

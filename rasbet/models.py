@@ -69,7 +69,7 @@ class Bet(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = True)
     odd = db.Column(db.Float, unique = False, nullable = False)
-    state = db.Column(db.String(20), unique = False, nullable = False)
+    state = db.Column(db.String(20), unique = False, nullable = False) #Rascunho Ativa Concluida Suspensa Cancelada
     date = db.Column(db.DateTime, nullable = True)
     currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id' ), nullable=False)
@@ -99,7 +99,8 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
     start_date = db.Column(db.DateTime, nullable = False)
-    state = db.Column(db.String(20), unique = False, nullable = False)
+    end_date = db.Column(db.DateTime, nullable = False)
+    state = db.Column(db.String(20), unique = False, nullable = False) #0-Ativo 1-A decorrer 2-Concluido 3-Suspenso 4-Cancelado
     competition_id = db.Column(db.Integer, db.ForeignKey('competition.id' ), nullable=False)
     odds = db.relationship("Odd")
 
