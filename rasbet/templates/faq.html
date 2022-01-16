@@ -5,16 +5,16 @@
 		<h2>FAQ</h2>
 		<h5 style="color: #838383; font-style: italic; font-size: 0.8rem;">As perguntas mais frequentes</h4>
 		<div id="accordion" class="mt-5">
-			{% for qa in site.static.faq %}
+			{% for qa in data['faq'] %}
 				<div class="card mb-3">
 					<div class="card-header">
 						<a class="card-link collapsed" style="color: #0B0A0D; font-size: 1.1rem;" data-toggle="collapse" href="#collapse{{qa.id}}">
-							<b>{{ qa.q }}</b>
+							<b>{{ qa['question'] }}</b>
 						</a>
 					</div>
 					<div id="collapse{{qa.id}}" class="collapse" data-parent="#accordion">
 						<div class="card-body">
-							{{ qa.a }}
+							{{ qa['answer'] }}
 						</div>
 					</div>
 				</div>

@@ -4,7 +4,7 @@
     <div class="content-section">
         <div class="media">
             <div class="media-body">
-                <h2 class="account-heading">{{ current_user.name }}</h2>
+                <h2 class="account-heading" style="padding-left:300px; margin-bottom: 30px">{{ current_user.name }}</h2>
                 <p class="text-secondary">Username: {{ current_user.username }}</p>
                 <p class="text-secondary">Email: {{ current_user.email }}</p>
                 <p class="text-secondary">Birth date: {{ current_user.birth_date }}</p>
@@ -16,43 +16,33 @@
         </div>
     
         <div class="row">
-            <div class="button text-center">
-                <button type="button" class="btn btn-danger">
-                    <a class="nav-item nav-link" href="{{ url_for('update') }}">Editar Conta</a>
-                </button>
+            <div class="button text-center" style ="margin-left: 300px;  padding-top: 20px">
+                <button type="button"  href="{{ url_for('update') }}" class="btn btn-danger">Editar Conta</button>
             </div>
         </div>
     </div>
     <div class="content-section">
         <div class="media">
             <div class="media-body">
-                <h2 class="account-heading">Wallet</h2>
+                <h2 class="account-heading" style="padding-left:300px; margin-bottom: 30px">Wallet</h2>
                 {% for key in balances.keys() %}
                 <p class="text-secondary">{{ key }}: {{ balances[key] }}</p>
                 {% endfor %}
             </div>
         </div>
-    <div class="row">
-    <div class="button text-center">
-        <button type="button" class="btn btn-danger">
-            <a class="nav-item nav-link" href="{{ url_for('cashout') }}">Levantar</a>
-        </button>
-      </div>
-      <div class="button text-center">
-        <button type="button" class="btn btn-danger">
-            <a class="nav-item nav-link" href="{{ url_for('deposit') }}">Depositar</a>
-        </button>
-      </div>
-      <div class="button text-center">
-        <button type="button" class="btn btn-danger">
-            <a class="nav-item nav-link" href="{{ url_for('convert') }}">Converter</a>
-        </button>
-      </div>
-      <div class="button text-center">
-        <button type="button" class="btn btn-danger">
-            <a class="nav-item nav-link" href="{{ url_for('movements') }}">Movimentos</a>
-        </button>
-      </div>
+    <div class="row" style="padding-top: 20px; margin-left: 120px ">
+        <div class="button text-center" style="padding-left: 10px">
+            <button type="button" href="{{ url_for('cashout') }}" class="btn btn-danger">Levantar</button>
+        </div>
+        <div class="button text-center" style="padding-left: 10px">
+            <button type="button" class="btn btn-danger" href="{{ url_for('deposit') }}">Depositar</button>
+        </div>
+        <div class="button text-center" style="padding-left: 10px">
+            <button type="button" class="btn btn-danger" href="{{ url_for('convert') }}">Converter</button>
+        </div>
+        <div class="button text-center" style="padding-left: 10px">
+            <button type="button" class="btn btn-danger" href="{{ url_for('movements') }}">Movimentos</button>
+        </div>
       
     </div>
 </div>
