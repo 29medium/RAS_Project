@@ -144,3 +144,15 @@ class ConvertForm(FlaskForm):
             raise ValidationError(f'Quantia indisponível na carteira')
         elif self.currency_id_in.data == self.currency_id_out.data:
             raise ValidationError(f'A conversão tem de ser feita com duas moedas diferentes')
+
+class BetForm(FlaskForm):
+    value = FloatField('Valor', validators=[DataRequired()])
+    currency_id = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
+
+    submit = SubmitField('Apostar')
+
+    def validate_value(self, value):
+        if value.data<1:
+            raise ValidationError(f'O valor mínimo da aposto é 1')
+        elif value.data > Wallet.query.filter_by(user_id=current_user.id, currency_id=self.currency_id.data).first().balance:
+            raise ValidationError(f'Quantia indisponível na carteira')
