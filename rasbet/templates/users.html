@@ -4,21 +4,19 @@
 
 {% block content %}
 
-<div class="col-md-12">
+<div class="col-md-12 mx-auto">
     <div class="content-wrapper">
 
-        <h2>Lista de utilizadores</h2>
+        <h2 style="padding-left: 30px">Lista de utilizadores</h2>
 
         <section class="content">
             <div class="container-fluid">
-                <!-- /.row -->
-                <div class="row">
+                <div class="row-2">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body table-responsive p-0">
-                                <table id="example2" class="table table-bordered table-hover"
-                                    style="margin: 0 !important;">
-                                    <thead class="bg-danger text-white">
+                            <div class="card-header">
+                                <table class="table" size="padding: 8em">
+                                    <thead class="p-3 mb-2 bg-danger text-white">
                                         <tr>
                                             <th scope="col">Id</th>
                                             <th scope="col">Username</th>
@@ -30,12 +28,12 @@
                                             <th scope="col">IBAN</th>
                                             <th scope="col">Morada</th>
                                             <th scope="col">Telemóvel</th>
-                                            <th scope="col">Tipo de Utilizador</th>
-                                            <th scope="col">Moeda Favorita</th>
+                                            <th scope="col">Titulo</th>
+                                            <th scope="col">Moeda</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for u in users %}
+                                        {% for u in users.keys() %}
                                         <tr>
                                             <td>
                                                 {{ u.id }}
@@ -50,7 +48,7 @@
                                                 {{ u.email }}
                                             </td>
                                             <td>
-                                                {{ u.birth_date }}
+                                                {{ u.birth_date.strftime("%Y-%m-%d") }}
                                             </td>
                                             <td>
                                                 {{ u.nif }}
@@ -71,7 +69,7 @@
                                                 {{ u.role }}
                                             </td>
                                             <td>
-                                                {{ u.currency_fav }}
+                                                {{ users[u].name }} ({{ users[u].symbol }})
                                             </td>
                                         </tr>
                                         {% endfor %}

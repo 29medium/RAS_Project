@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <div class="col-md-8 mx-auto">
+        <div class="content-section">
+            <div class="media">
+                <div class="media-body">
+                    <h2 class="account-heading text-center" style=" margin-bottom: 30px">Aposta Realizada</h2>
+
+                    <ul class="list-group">
+                        {% for odd in bet_odds %}
+                        <li class="list-group-item list-group-item-light">
+                            <div class="text-muted">
+                                <h5>{{ odd[1]}}</h5>
+                            </div>
+                            <div class="text-muted">ODD: {{ odd[0].value }}</div>
+                            <div class="text-muted">Aposta: {{odd[2]}}</div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="card" style="margin-top: 20px;">
+                        <h4 style="margin-left: 20px;"> Odd total: {{ bet.odd|round(2) }}
+                        </h4>
+                        <h4 style="margin-left: 20px;"> Valor Apostado:
+                            {{ bet.value|round(2) }}</h4>
+                        <h4 class="large text-muted-dark" style="margin-left: 20px;"> Possiveis ganhos:
+                            {{ (bet.odd * bet.value)|round(2) }}</h4>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        <div class="float-sm-right">
+                            <a href="##" onClick="history.go(-1); return false;"><button class="btn btn-danger"
+                                    type="button"><i class="fas fa-arrow-left"></i> Voltar</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

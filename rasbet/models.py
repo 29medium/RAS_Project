@@ -88,6 +88,7 @@ class BetOdd(db.Model):
 class Odd(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = False)
+    result = db.Column(db.Boolean, nullable = True)
     participant_id = db.Column(db.Integer, db.ForeignKey('participant.id' ), nullable = True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id' ), nullable=False)
     bo = db.relationship("BetOdd")

@@ -1,90 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css')}}">
-    {% if title %}
-    <title>Rasbet - {{ title }} </title>
-    {% else %}
-    <title>Rasbet</title>
-    {% endif %}
-  </head>
-  <body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-danger fixed-top">
-          <div class="container">
-            <a class="navbar-brand mr-4" href="/">Rasbet</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarToggle">
-              <div class="navbar-nav mr-auto">
-                <a class="nav-item nav-link" href="{{ url_for('bets', sport_id=0, competition_id=-1) }}">Apostar</a>
-                {% if current_user.is_authenticated %}
-                <a class="nav-item nav-link" href="{{ url_for('mybets') }}">Minhas Apostas</a>
-                {% endif %}
-                {% if current_user.role == "admin" %}
-                <a class="nav-item nav-link" href="{{ url_for('users') }}">Utilizadores</a>
-                <a class="nav-item nav-link" href="{{ url_for('events') }}">Gerir Apostas</a>
-                {% endif %}
-                <a class="nav-item nav-link" href="{{ url_for('about') }}">Sobre</a>
-                <a class="nav-item nav-link" href="{{ url_for('faq') }}">FAQ</a>
-              </div>
-              <!-- Navbar Right Side -->
-              <div class="navbar-nav">
-                {% if current_user.is_authenticated %}
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css')}}">
+  {% if title %}
+  <title>Rasbet - {{ title }} </title>
+  {% else %}
+  <title>Rasbet</title>
+  {% endif %}
+</head>
 
-                <div class="navbar-form">
-                  <div class="btn-group">
-                      <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">Saldo: {{ balance }} {{ symbol }}<span class="caret"></span></a>
-                      <ul class="dropdown-menu">
-                        {% for key in balances.keys() %}
-                        <li style="padding-left:3px ;" >{{ key }}: {{ balances[key] }}</li>
-                        {% endfor %}
-                      </ul>
-                  </div>
-              </div>
-                
-                <a class="nav-item nav-link" href="{{ url_for('account') }}">Conta</a>
-                <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                <a class="nav-item nav-link" href="{{ url_for('register') }}">Registar</a>
-                {% endif %}
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-danger fixed-top">
+      <div class="container">
+        <a class="navbar-brand mr-6" href="/">Rasbet</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="{{ url_for('bets', sport_id=0, competition_id=-1) }}">Apostar</a>
+            {% if current_user.is_authenticated %}
+            <a class="nav-item nav-link" href="{{ url_for('mybets') }}">Minhas Apostas</a>
+            {% endif %}
+            {% if current_user.role == "admin" %}
+            <a class="nav-item nav-link" href="{{ url_for('events') }}">Gerir Eventos</a>
+            {% endif %}
+            <a class="nav-item nav-link" href="{{ url_for('about') }}">Sobre</a>
+            <a class="nav-item nav-link" href="{{ url_for('faq') }}">FAQ</a>
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if current_user.is_authenticated %}
+
+            <div class="navbar-form">
+              <div class="btn-group">
+                <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">Saldo: {{ balance }}
+                  {{ symbol }}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  {% for key in balances.keys() %}
+                  <li style="padding-left:3px ;">{{ key }}: {{ balances[key] }}</li>
+                  {% endfor %}
+                </ul>
               </div>
             </div>
+            {% if current_user.role == "admin" %}
+            <a class="nav-item nav-link" href="{{ url_for('users') }}">Utilizadores</a>
+            {% endif %}
+
+            <a class="nav-item nav-link" href="{{ url_for('account') }}">Conta</a>
+            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+            <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+            <a class="nav-item nav-link" href="{{ url_for('register') }}">Registar</a>
+            {% endif %}
           </div>
-        </nav>
-    </header>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-    <main role="main" class="content-section">
-      <div class="container col-md-12">
+  <main role="main" class="content-section">
+    <div class="container col-md-12">
 
-              {% with messages = get_flashed_messages(with_categories=true) %} 
-              {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{message}}
-                    </div>
-                {% endfor %}
-              {% endif %}
-              {% endwith %}
-            {% block content %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{message}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
 
     </div>
-    </main>
+  </main>
 
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+</body>
+
 </html>

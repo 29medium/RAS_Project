@@ -5,63 +5,72 @@
 {% block content %}
 
 <div class="col-md-8 mx-auto">
-<div class="content-wrapper">
+    <div class="content-wrapper">
 
-  <h2>Apostas</h2>
+        <h2 style="padding-left: 30px">Apostas</h2>
 
-  <section class="content" style="padding-top:20px ">
-      <div class="container-fluid">
-          <div class="row-2">
-              <div class="col-12">
-                  <div class="card">
-                      <div class="card-header">
-                          <table class="table" size="padding: 8em">
-                              <thead class="p-3 mb-2 bg-danger text-white">
-                                <tr>
-                                  <th scope="col">Id</th>
-                                  <th scope="col">Odd</th>
-                                  <th scope="col">Montante</th>
-                                  <th scope="col">Possíveis Ganhos</th>
-                                  <th scope="col">Moeda</th>
-                                  <th scope="col">Estado</th>
-                                  <th scope="col">Data</th>
-                                  
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {% for b in bets.keys() %}
-                                <tr>
-                                    <td>
-                                        {{ b.id }}
-                                    </td>
-                                    <td>
-                                        {{ b.odd|round(2) }}
-                                    </td>
-                                    <td>
-                                        {{ b.value|round(2) }}
-                                    </td>
-                                    <td>
-                                        {{ (b.value * b.odd)|round(2) }}
-                                    </td>
-                                    <td>
-                                        {{ bets[b] }}
-                                    </td>
-                                    <td>
-                                        {{ b.state }}
-                                    </td>
-                                    <td>
-                                        {{ b.date }}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                              </tbody>
-                            </table>
-                      </div>
-                   </div>
+        <section class="content" style="padding-top:20px ">
+            <div class="container-fluid">
+                <div class="row-2">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <table class="table" size="padding: 8em">
+                                    <thead class="p-3 mb-2 bg-danger text-white">
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Odd</th>
+                                            <th scope="col">Montante</th>
+                                            <th scope="col">Possíveis Ganhos</th>
+                                            <th scope="col">Moeda</th>
+                                            <th scope="col">Estado</th>
+                                            <th scope="col">Data</th>
+                                            <th scope="col">Aposta</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for b in bets.keys() %}
+                                        <tr>
+                                            <td>
+                                                {{ b.id }}
+                                            </td>
+                                            <td>
+                                                {{ b.odd|round(2) }}
+                                            </td>
+                                            <td>
+                                                {{ b.value|round(2) }}
+                                            </td>
+                                            <td>
+                                                {{ (b.value * b.odd)|round(2) }}
+                                            </td>
+                                            <td>
+                                                {{ bets[b] }}
+                                            </td>
+                                            <td>
+                                                {{ b.state }}
+                                            </td>
+                                            <td>
+                                                {{ b.date.strftime("%Y-%m-%d %H:%M") }}
+                                            </td>
+                                            <td>
+                                                <div class="button text-center"
+                                                    style="padding-left: 10px; padding-bottom: 10px">
+                                                    <a href="{{url_for('bet', bet_id=b.id)}}"><button type="button"
+                                                            class="btn btn-sm btn-danger"><i
+                                                                class="fas fa-eye"></i></button></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-           </div>
-        </div>
-  </section>
+            </div>
+        </section>
+    </div>
 </div>
-</div>
-{% endblock %}>
+{% endblock %}

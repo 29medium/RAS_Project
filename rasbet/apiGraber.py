@@ -14,8 +14,6 @@ def loadApi():
             novo = Sport(id=desporto['id'],name=desporto['name'])
             db.session.add(novo)
             
-         
-
         for competicao in desporto['competicoes']:
             comp = Competition.query.filter_by(id=competicao['id']).first()
             if not comp:
@@ -36,24 +34,33 @@ def loadApi():
                 start_date = datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')
                 if start_date > datetime.now():
                     state = 0
-                elif start_date + timedelta(minutes=30) < datetime.now():
+                elif start_date + timedelta(minutes=1) < datetime.now():
                     state = 2
                 else:
                     state = 1
-                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=30), state=state) # falta result
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=1), state=state) # falta result
                 db.session.add(novo)
             
 
             for participant in evento['intervenientes']:
-                if (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')):
-                    result = -2
-                elif ((datetime.now() > datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')) and (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M') + timedelta(minutes=30))):
-                    if evento['resultado'] == -1:
-                        result = 0
-                    elif evento['resultado'] == participant:
-                        result = 1
-                    else:
-                        result = -1
+                if ((datetime.now() > datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')) and (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M') + timedelta(minutes=1))):
+                    odd_resultado = Odd.query.filter_by(event_id=evento['id'], participant_id=participant).first()
+                    if odd_resultado and not odd_resultado.result:
+                        if evento['resultado'] == -1:
+                            odd_resultado.result = False
+                            odd_empate = Odd.query.filter_by(event_id=event.id, participant_id=None).first()
+                            if odd_empate and not odd_empate.result:
+                                odd_empate.result = True
+                        elif evento['resultado'] == participant.id:
+                            odd_resultado.result = True
+                            odd_empate = Odd.query.filter_by(event_id=event.id, participant_id=None).first()
+                            if odd_empate and not odd_resultado.result:
+                                odd_empate.result = False
+                        else:
+                            odd_resultado.result = False
+                            odd_empate = Odd.query.filter_by(event_id=event.id, participant_id=None).first()
+                            if odd_empate and not odd_resultado.result:
+                                odd_empate.result = False
             
 
             if len(evento['odds']) == len(evento['intervenientes']):
@@ -116,24 +123,33 @@ def loadApiWorker():
                 start_date = datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')
                 if start_date > datetime.now():
                     state = 0
-                elif start_date + timedelta(minutes=30) < datetime.now():
+                elif start_date + timedelta(minutes=1) < datetime.now():
                     state = 2
                 else:
                     state = 1
-                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=30) ,state=state) # falta result
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=1) ,state=state) # falta result
                 db.session.add(novo)
             
 
             for participant in evento['intervenientes']:
-                if (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')):
-                    result = -2
-                elif ((datetime.now() > datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')) and (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M') + timedelta(minutes=30))):
-                    if evento['resultado'] == -1:
-                        result = 0
-                    elif evento['resultado'] == participant:
-                        result = 1
-                    else:
-                        result = -1
+                if ((datetime.now() > datetime.strptime(evento['data'],'%Y-%m-%d %H:%M')) and (datetime.now() < datetime.strptime(evento['data'],'%Y-%m-%d %H:%M') + timedelta(minutes=1))):
+                    odd_resultado = Odd.query.filter_by(event_id=evento['id'], participant_id=participant).first()
+                    if odd_resultado and not odd_resultado.result:
+                        if evento['resultado'] == -1:
+                            odd_resultado.result = False
+                            odd_empate = Odd.query.filter_by(event_id=event.id, participant_id=None).first()
+                            if odd_empate and not odd_resultado.result:
+                                odd_empate.result = True
+                        elif evento['resultado'] == participant.id:
+                            odd_resultado.result = True
+                            odd_empate = Odd.query.filter_by(event_id=event.id, participant_id=None).first()
+                            if odd_empate and not odd_resultado.result:
+                                odd_empate.result = False
+                        else:
+                            odd_resultado.result = False
+                            odd_empate = Odd.query.filter_by(event_id=event.id, participant_id=None).first()
+                            if odd_empate and not odd_resultado.result:
+                                odd_empate.result = False
                 
                 
             if len(evento['odds']) == len(evento['intervenientes']):

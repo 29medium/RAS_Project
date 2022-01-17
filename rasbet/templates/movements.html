@@ -5,61 +5,62 @@
 {% block content %}
 
 <div class="col-md-8 mx-auto">
-<div class="content-wrapper">
+  <div class="content-wrapper">
 
-  <section class="content-header">
-    <div class="row">
+    <section class="content-header">
+      <div class="row">
         <div class="col-6" style="align-self: flex-end;">
           <h2>Histórico de Movimentos</h2>
         </div>
         <div class="col-sm-6">
-            <div class="float-sm-right">
-              <a href="##" onClick="history.go(-1); return false;"><button class="btn btn-danger" type="button">voltar</button></a>
-            </div>
+          <div class="float-sm-right">
+            <a href="##" onClick="history.go(-1); return false;"><button class="btn btn-danger"
+                type="button">voltar</button></a>
+          </div>
         </div>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <section class="content" style="padding-top:20px ">
+    <section class="content" style="padding-top:20px ">
       <div class="container-fluid">
-          <div class="row-2">
-              <div class="col-12">
-                  <div class="card">
-                      <div class="card-header">
-                          <table class="table" size="padding: 8em">
-                              <thead class="p-3 mb-2 bg-danger text-white">
-                                <tr>
-                                  <th scope="col">Data</th>
-                                  <th scope="col">Tipo</th>
-                                  <th scope="col">Montante</th>
-                                  <th scope="col">Moeda</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {% for m in movements %}
-                                <tr>
-                                    <td>
-                                        {{ m.date.strftime("%Y-%m-%d %H:%M:%S") }}
-                                    </td>
-                                    <td>
-                                        {{ m.type }}
-                                    </td>
-                                    <td>
-                                        {{ m.value|round(2)  }}
-                                    </td>
-                                    <td>
-                                        {{ currencies[m.id] }}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                              </tbody>
-                            </table>
-                      </div>
-                   </div>
-                </div>
-           </div>
+        <div class="row-2">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <table class="table" size="padding: 8em">
+                  <thead class="p-3 mb-2 bg-danger text-white">
+                    <tr>
+                      <th scope="col">Data</th>
+                      <th scope="col">Tipo</th>
+                      <th scope="col">Montante</th>
+                      <th scope="col">Moeda</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for m in movements %}
+                    <tr>
+                      <td>
+                        {{ m.date.strftime("%Y-%m-%d %H:%M") }}
+                      </td>
+                      <td>
+                        {{ m.type }}
+                      </td>
+                      <td>
+                        {{ m.value|round(2)  }}
+                      </td>
+                      <td>
+                        {{ currencies[m.id] }}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-  </section>
-</div>
+      </div>
+    </section>
+  </div>
 </div>
 {% endblock %}>
