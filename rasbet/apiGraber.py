@@ -38,7 +38,7 @@ def loadApi():
                     state = 2
                 else:
                     state = 1
-                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=1), state=state) # falta result
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=1), state=str(state)) # falta result
                 db.session.add(novo)
             
 
@@ -127,7 +127,7 @@ def loadApiWorker():
                     state = 2
                 else:
                     state = 1
-                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=1) ,state=state) # falta result
+                novo = Event(id=evento['id'],name=evento['name'],competition_id=evento['competicao'],start_date=start_date,end_date = start_date + timedelta(minutes=1) ,state=str(state)) # falta result
                 db.session.add(novo)
             
 

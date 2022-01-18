@@ -101,7 +101,7 @@
                                                     </div>
                                                     <div class="button text-center"
                                                         style="padding-left: 10px; padding-bottom: 10px">
-                                                        <a href="{{url_for('event', event_id=e.id, status=3)}}">
+                                                        <a href="{{url_for('event', event_id=e.id, status=4)}}">
                                                             <button type="button" class="btn btn-sm btn-danger"><i
                                                                     class="fas fa-ban"></i></button></a>
                                                     </div>
@@ -129,9 +129,9 @@
                                                     </div>
                                                     <div class="button text-center"
                                                         style="padding-left: 10px; padding-bottom: 10px">
-                                                        <a href="{{url_for('event', event_id=e.id, status=3)}}">
+                                                        <a href="{{url_for('event', event_id=e.id, status=4)}}">
                                                             <button type="button" class="btn btn-sm btn-danger"
-                                                                disabled><i class="fas fa-ban"></i></button></a>
+                                                                ><i class="fas fa-ban"></i></button></a>
                                                     </div>
                                                 </div>
                                                 {% else %}

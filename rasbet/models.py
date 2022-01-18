@@ -22,9 +22,16 @@ class User(db.Model, UserMixin):
     currency_fav = db.Column(db.Integer, db.ForeignKey('currency.id'), nullable=False)
     wallet = db.relationship("Wallet")
     bets = db.relationship("Bet")
+    notifications = db.relationship("Notification")
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
+    text = db.Column(db.String(200), nullable=False)
+    bet_id = db.Column(db.Integer, db.ForeignKey('bet.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
@@ -56,7 +63,7 @@ class Movement(db.Model):
     wm = db.relationship("WalletMovement")
 
     def __repr__(self):
-        return f"Movement('{self.value}', '{self.type}', '{self.date})"
+        return f"Movement('{self.id}','{self.value}', '{self.type}', '{self.date})"
 
 class WalletMovement(db.Model):
     movement_id = db.Column(db.Integer, db.ForeignKey('movement.id'), primary_key=True, nullable=False)

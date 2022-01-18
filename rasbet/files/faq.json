@@ -8,7 +8,7 @@
     {
       "id": 2,
       "question": "Como posso iniciar sessão na minha conta?",
-      "answer": "Basta que clique em “Iniciar sessão” no canto superior direito da página, coloque o seu nome de utilizador e a sua palavra-passe e carregue em Iniciar sessão. "
+      "answer": "Basta que clique em “Login” no canto superior direito da página, coloque o seu nome de utilizador e a sua palavra-passe e carregue em Iniciar sessão. "
     },
     {
       "id": 3,
@@ -18,7 +18,7 @@
     {
       "id": 4,
       "question": "Qual é o valor minímo de depósito?",
-      "answer": "O mínimo é 10 dollars. Poderá consultar o seu saldo na opção ”Saldo” no canto superior direito.  "
+      "answer": "O mínimo é a conversão para 10 dollars em cada moeda. Poderá consultar o seu saldo na opção ”Saldo” no canto superior direito.  "
     },
     {
       "id": 5,
@@ -38,7 +38,7 @@
     {
       "id": 8,
       "question": "Posso editar a minha conta?",
-      "answer": "Poderá alterar a sua conta selecionando a opção ”conta” no canto superior direito e optando pela opção ”Editar Conta” presente junto ás informações do seu perfil."
+      "answer": "Poderá alterar a sua conta selecionando a opção ”Conta” no canto superior direito e optando pela opção ”Editar Conta” presente junto ás informações do seu perfil."
     }
     
   ]     

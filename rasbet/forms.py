@@ -50,7 +50,7 @@ class RegistrationForm(FlaskForm):
     
     def validate_phone(self, phone):
         if User.query.filter_by(phone=phone.data).first():
-            raise ValidationError('O email já está registado')
+            raise ValidationError('O número de telemóvel já está registado')
     
     def validate_birth_date(self, birth_date):
         max_date = datetime.datetime.now() - datetime.timedelta(days=18*365)
@@ -60,7 +60,7 @@ class RegistrationForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
+    remember = BooleanField('Lembrar')
     submit = SubmitField('Login')
 
 class UpdateAccountForm(FlaskForm):
@@ -79,27 +79,27 @@ class UpdateAccountForm(FlaskForm):
     def validate_username(self, username):
         if username.data != current_user.username:
             if User.query.filter_by(username=username.data).first():
-                raise ValidationError('That username is taken. Please choose another one')
+                raise ValidationError('O username já existe')
     
     def validate_email(self, email):
         if email.data != current_user.email:
             if User.query.filter_by(email=email.data).first():
-                raise ValidationError('That email is taken. Please choose another one')
+                raise ValidationError('O email já existe')
     
     def validate_cc(self, cc):
         if cc.data != current_user.cc:
             if User.query.filter_by(cc=cc.data).first():
-                raise ValidationError('That cc is taken. Please choose another one')
+                raise ValidationError('O cc já existe')
 
     def validate_nif(self, nif):
         if nif.data != current_user.nif:
             if User.query.filter_by(nif=nif.data).first():
-                raise ValidationError('That nif is taken. Please choose another one')
+                raise ValidationError('O nif já existe')
 
     def validate_phone(self, phone):
         if phone.data != current_user.phone:
             if User.query.filter_by(phone=phone.data).first():
-                raise ValidationError('That phone is taken. Please choose another one')
+                raise ValidationError('O número de telemovel já existe')
 
     def validate_birth_date(self, birth_date):
         max_date = datetime.datetime.now() - datetime.timedelta(days=18*365)
@@ -154,7 +154,8 @@ class BetForm(FlaskForm):
     submit = SubmitField('Apostar')
 
     def validate_value(self, value):
-        if value.data<1:
-            raise ValidationError(f'O valor mínimo da aposto é 1')
+        min = 1 / Currency.query.filter_by(id=self.currency_id.data).first().convertion_rate
+        if value.data<min:
+            raise ValidationError(f'O valor mínimo da aposta é {min} {Currency.query.filter_by(id=self.currency_id.data).first().name}')
         elif value.data > Wallet.query.filter_by(user_id=current_user.id, currency_id=self.currency_id.data).first().balance:
             raise ValidationError(f'Quantia indisponível na carteira')

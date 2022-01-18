@@ -9,14 +9,14 @@ def stateChanger():
     for e in events:
         if e.start_date < datetime.now() and e.state == "0":
             e.state = "1"
-        elif e.end_date < datetime.now():
+        elif e.end_date < datetime.now() and (e.state=="1" or e.state=="3"):
             odds = Odd.query.filter_by(event_id=e.id).all()
             betodds = []
 
             for o in odds:
                 betodds += BetOdd.query.filter_by(odd_id=o.id).all()
 
-            status = ""
+            status = None
             for bo in betodds:
                 bet = Bet.query.filter_by(id=bo.bet_id).first()
 
@@ -55,8 +55,15 @@ def stateChanger():
                         db.session.add(wm)
 
                         wallet.balance += bet.value * bet.odd
+
+                        notif = Notification(bet_id=bet.id, text=f'A sua aposta foi ganha e foram transferidos {bet.value * bet.odd} {Currency.query.filter_by(id=bet.currency_id).first().symbol}', user_id=bet.user_id)
+                        db.session.add(notif)
+                        flash('Nova notificação', 'warning')
                     elif change and not win:
                         bet.state = "Perdida"
+                        notif = Notification(bet_id=bet.id, text=f'A sua aposta foi perdida', user_id=bet.user_id)
+                        db.session.add(notif)
+                        flash('Nova notificação', 'warning')
                     status = "2"
                 elif e.state == "3":
                     bet.state = "Cancelada"
@@ -76,7 +83,13 @@ def stateChanger():
                     wallet.balance += bet.value
 
                     status = "4"
-            e.state = status
+
+                    notif = Notification(bet_id=bet.id, text=f'A sua aposta foi cancelada e foram devolvidos {bet.value} {Currency.query.filter_by(id=bet.currency_id).first().symbol}', user_id=bet.user_id)
+                    db.session.add(notif)
+                    flash('Nova notificação', 'warning')
+
+            if status:
+                e.state = status
 
     db.session.commit()
 
