@@ -53,6 +53,7 @@
                 <div class="row-2">
                     <div class="card">
                         <div class="card-header">
+                            {% if events %}
                             <table class="table" size="padding: 8em">
                                 {% if sport_id == "0" %}
                                 <thead class="p-3 mb-2 bg-danger text-white">
@@ -136,6 +137,9 @@
                                 </tbody>
                                 {% endif %}
                             </table>
+                            {% else %}
+                            <h5>Não tem eventos disponíveis de {{ sport_name }}</h5>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
