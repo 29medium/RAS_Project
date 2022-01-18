@@ -6,6 +6,7 @@ from flask_login import UserMixin
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Modelo do User
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -27,12 +28,14 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
 
+# Modelo da Notification
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     text = db.Column(db.String(200), nullable=False)
     bet_id = db.Column(db.Integer, db.ForeignKey('bet.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+# Modelo da Wallet
 class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     balance = db.Column(db.Float, unique = False, nullable = False)
@@ -43,6 +46,7 @@ class Wallet(db.Model):
     def __repr__(self):
         return f"Wallet('{self.balance}', '{self.user_id}')"
 
+# Modelo do Currency
 class Currency(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(20), unique = False, nullable = False)
@@ -55,6 +59,7 @@ class Currency(db.Model):
     def __repr__(self):
         return f"Currency('{self.name}', '{self.conversion_rate}')"
 
+# Modelo do Movement
 class Movement(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = False)
@@ -65,6 +70,7 @@ class Movement(db.Model):
     def __repr__(self):
         return f"Movement('{self.id}','{self.value}', '{self.type}', '{self.date})"
 
+# Modelo do WalletMovement
 class WalletMovement(db.Model):
     movement_id = db.Column(db.Integer, db.ForeignKey('movement.id'), primary_key=True, nullable=False)
     wallet_id = db.Column(db.Integer, db.ForeignKey('wallet.id' ), primary_key=True, nullable=False)
@@ -72,6 +78,7 @@ class WalletMovement(db.Model):
     def __repr__(self):
         return f"WalletMovement('{self.movement_id}', '{self.wallet_id}')"
 
+# Modelo da Bet
 class Bet(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = True)
@@ -85,6 +92,7 @@ class Bet(db.Model):
     def __repr__(self):
         return f"Bet('{self.value}', '{self.state}', '{self.user_id}')"
 
+# Modelo da BetOdd
 class BetOdd(db.Model):
     bet_id = db.Column(db.Integer, db.ForeignKey('bet.id' ), primary_key=True, nullable=False)
     odd_id = db.Column(db.Integer, db.ForeignKey('odd.id' ), primary_key=True, nullable=False)
@@ -92,6 +100,7 @@ class BetOdd(db.Model):
     def __repr__(self):
         return f"BetOdd('{self.bet_id}', '{self.odd_id}')"
 
+# Modelo da Odd
 class Odd(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     value = db.Column(db.Float, unique = False, nullable = False)
@@ -103,6 +112,7 @@ class Odd(db.Model):
     def __repr__(self):
         return f"Odd('{self.value}', '{self.participant_id}', '{self.event_id}')"
 
+# Modelo do Event
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
@@ -115,6 +125,7 @@ class Event(db.Model):
     def __repr__(self):
         return f"Event('{self.name}', '{self.start_date}')"
 
+# Modelo da Competition
 class Competition(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(120), unique = False, nullable = False)
@@ -124,6 +135,7 @@ class Competition(db.Model):
     def __repr__(self):
         return f"Competition('{self.name}', '{self.sport_id}')"
 
+# Modelo do Sport
 class Sport(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(120), unique = True, nullable = False)
@@ -132,6 +144,7 @@ class Sport(db.Model):
     def __repr__(self):
         return f"Sport('{self.id}', '{self.name}')"
 
+# Modelo do Participant
 class Participant(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(120), unique = True, nullable = False)

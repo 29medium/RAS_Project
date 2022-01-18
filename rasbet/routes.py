@@ -10,7 +10,7 @@ import json
 ## ficheiro de routes
 ## especificado os caminhos a que um utilizador logado(ou não) pode aceder
 
-
+# Função que devolve os pre requisitos de uma página para conter informação na navbar
 def pre_requisits():
     balance = None
     balances = {}
@@ -32,6 +32,7 @@ def pre_requisits():
     
     return balance, balances, symbol, notifications
 
+# Route para a página inicial
 @app.route("/")
 @app.route("/home")
 def home():
@@ -39,9 +40,11 @@ def home():
 
     return render_template('home.html', title='Bets', balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
+# Método que determina a ordenação do array de apostas
 def ord_bets(e):
     return e[0].start_date
 
+# Route para a página apostar
 @app.route("/bets/<sport_id>/<competition_id>", methods=['GET', 'POST'])
 def bets(sport_id, competition_id):
     wallet_DB = Wallet.query.all()
@@ -67,13 +70,11 @@ def bets(sport_id, competition_id):
             if line.id == current_user.currency_fav:
                 symbol = line.symbol
                 break
-        #symbol = currency_DB.filter_by(id=current_user.currency_fav).first().symbol
+
         wallets = []
         for line in wallet_DB:
             if line.user_id == current_user.id:
                 wallets.append(line)
-
-        #wallets = wallet_DB.filter_by(user_id=current_user.id).all()
 
         for w in wallets:
             cur = None
@@ -81,7 +82,6 @@ def bets(sport_id, competition_id):
                 if line.id == w.currency_id:
                     cur = line
                     break
-            #cur = currency_DB.filter_by(id=w.currency_id).first()
             balances[cur.name] = str(round(w.balance, 2)) + " " + cur.symbol
 
     competition_name = None
@@ -95,13 +95,11 @@ def bets(sport_id, competition_id):
             sport_name = line.name
             break
 
-    #sport_name = sport_DB.filter_by(id=sport_id).first().name
     competitions = []
     for line in competition_DB:
         if line.sport_id == int(sport_id):
             competitions.append(line)
 
-    #competitions = competition_DB.filter_by(sport_id=sport_id).all()
     if competition_id == "-1":
         for c in competitions:
             temp = []
@@ -109,7 +107,6 @@ def bets(sport_id, competition_id):
                 if line.competition_id == c.id:
                     temp.append(line)
             e += temp
-            #e += event_DB.filter_by(competition_id=c.id).all()
     else:
         competition_name = None
         for line in competition_DB:
@@ -117,13 +114,9 @@ def bets(sport_id, competition_id):
                 competition_name = line.name
                 break
 
-        #competition_name = competition_DB.filter_by(id=competition_id).first().name
-
         for line in event_DB:
             if line.competition_id == int(competition_id):
                 e.append(line)
-
-        #e = event_DB.filter_by(competition_id=competition_id).all()
 
     for ee in e:
         odd = []
@@ -131,15 +124,12 @@ def bets(sport_id, competition_id):
             if line.event_id == ee.id:
                 odd.append(line)
 
-        #odd = Odd.query.filter_by(event_id=ee.id).all()
         p = []
         for o in odd:
             for line in participant_DB:
                 if line.id == o.participant_id:
                     p.append(line)
                     break
-
-            # p.append(Participant.query.filter_by(id=o.participant_id).first())
 
         events.append([ee, odd, p])
         events.sort(key=ord_bets)
@@ -158,21 +148,18 @@ def bets(sport_id, competition_id):
         for line in betOdd_DB:
             if line.bet_id == bet.id:
                 allbetods.append(line)
-        # for bo in betOdd_DB.filter_by(bet_id=bet.id).all():
         for bo in allbetods:
             zOdd = None
             for line in odd_DB:
                 if line.id == bo.odd_id:
                     zOdd = line
                     break
-            #zOdd = Odd.query.filter_by(id=bo.odd_id).first()
 
             if zOdd.participant_id == None:
                 for line in event_DB:
                     if line.id == zOdd.event_id:
                         bet_odds.append((zOdd, line.name, "Empate"))
 
-                # bet_odds.append((zOdd,event_DB.filter_by(id=zOdd.event_id).first().name,"Empate"))
             else:
                 for line in event_DB:
                     if line.id == zOdd.event_id:
@@ -181,8 +168,6 @@ def bets(sport_id, competition_id):
                                 bet_odds.append((zOdd, line.name, line2.name))
                                 break
                         break
-
-            # bet_odds.append((zOdd,event_DB.filter_by(id=zOdd.event_id).first().name,participant_DB.filter_by(id=zOdd.participant_id).first().name))
 
             odd_ids.append(zOdd.id)
         if form.validate_on_submit():
@@ -210,8 +195,6 @@ def bets(sport_id, competition_id):
                         wallet = line
                         break
 
-                #wallet = wallet_DB.filter_by(user_id=current_user.id, currency_id=form.currency_id.data).first()
-
                 wm = WalletMovement(movement_id=mov.id,
                                     wallet_id=wallet.id)
                 db.session.add(wm)
@@ -234,6 +217,7 @@ def bets(sport_id, competition_id):
                                events=events, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
 
+# Route para a página de uma aposta
 @app.route("/bet/<bet_id>")
 def bet(bet_id):
     balance, balances, symbol, notifications = pre_requisits()
@@ -245,21 +229,19 @@ def bet(bet_id):
     for line in BetOdd.query.all():
         if line.bet_id == bet.id:
             allbetods.append(line)
-    # for bo in betOdd_DB.filter_by(bet_id=bet.id).all():
+
     for bo in allbetods:
         zOdd = None
         for line in Odd.query.all():
             if line.id == bo.odd_id:
                 zOdd = line
                 break
-        #zOdd = Odd.query.filter_by(id=bo.odd_id).first()
 
         if zOdd.participant_id == None:
             for line in Event.query.all():
                 if line.id == zOdd.event_id:
                     bet_odds.append((zOdd, line.name, "Empate", line.state))
 
-            # bet_odds.append((zOdd,event_DB.filter_by(id=zOdd.event_id).first().name,"Empate"))
         else:
             for line in Event.query.all():
                 if line.id == zOdd.event_id:
@@ -272,6 +254,7 @@ def bet(bet_id):
     return render_template('bet.html', bet=bet, bet_odds=bet_odds, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
 
+# Route para adicionar uma odd a uma aposta
 @app.route("/bets/odd/<sport_id>/<competition_id>/<odd_id>", methods=['GET', 'POST'])
 @login_required
 def odd(sport_id, competition_id, odd_id):
@@ -296,7 +279,7 @@ def odd(sport_id, competition_id, odd_id):
 
     return redirect(url_for('bets', sport_id=sport_id, competition_id=competition_id))
 
-
+# Route para remover uma odd de uma aposta
 @app.route("/bets/remove_odd/<sport_id>/<competition_id>/<odd_id>", methods=['GET', 'DELETE'])
 @login_required
 def remove_odd(sport_id, competition_id, odd_id):
@@ -313,7 +296,7 @@ def remove_odd(sport_id, competition_id, odd_id):
 
     return redirect(url_for('bets', sport_id=sport_id, competition_id=competition_id))
 
-
+# Route para a página das minhas apostas
 @app.route("/mybets")
 @login_required
 def mybets():
@@ -328,14 +311,14 @@ def mybets():
 
     return render_template('mybets.html', title='Mybets', bets=bets, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
-
+# Route para a página sobre
 @app.route("/about")
 def about():
     balance, balances, symbol, notifications = pre_requisits()
 
     return render_template('about.html', title='About', balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
-
+# Route para a página faq
 @app.route("/faq")
 def faq():
     balance, balances, symbol, notifications = pre_requisits()
@@ -343,7 +326,7 @@ def faq():
     data = json.load(open('rasbet/files/faq.json'))
     return render_template('faq.html', title='FAQ', balance=balance, symbol=symbol, balances=balances, data=data, notifications=notifications)
 
-
+# Route para a página de registo
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -382,7 +365,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
+# Route para a página de login
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -401,7 +384,7 @@ def login():
 
     return render_template('login.html', title='Login', form=form)
 
-
+# Route para efetuar logout
 @app.route("/logout")
 @login_required
 def logout():
@@ -409,7 +392,7 @@ def logout():
     flash('Logout efetuado com sucesso', 'info')
     return(redirect(url_for('home')))
 
-
+# Route para a página da conta
 @app.route("/account")
 @login_required
 def account():
@@ -417,7 +400,7 @@ def account():
 
     return render_template('account.html', title='Account', balances=balances, balance=balance, symbol=symbol, notifications=notifications)
 
-
+# Route para atualizar as informações da conta
 @app.route("/account/update", methods=['GET', 'POST'])
 @login_required
 def update():
@@ -453,7 +436,7 @@ def update():
 
     return render_template('update.html', title='Update', form=form, balance=balance, balances=balances, symbol=symbol, notifications=notifications)
 
-
+# Route para a página de depósito
 @app.route("/account/deposit", methods=['GET', 'POST'])
 @login_required
 def deposit():
@@ -481,7 +464,7 @@ def deposit():
 
     return render_template('deposit.html', title='Deposit', form=form, balance=balance, balances=balances, symbol=symbol, notifications=notifications)
 
-
+# Route para a página de levantamento
 @app.route("/account/cashout", methods=['GET', 'POST'])
 @login_required
 def cashout():
@@ -509,7 +492,7 @@ def cashout():
 
     return render_template('cashout.html', title='Cashout', form=form, balance=balance, balances=balances, symbol=symbol, notifications=notifications)
 
-
+# Route para a página de converter moedas
 @app.route("/account/convert", methods=['GET', 'POST'])
 @login_required
 def convert():
@@ -564,11 +547,11 @@ def convert():
 
     return render_template('convert.html', title='Convert', form=form, balance=balance, balances=balances, symbol=symbol, notifications=notifications)
 
-
+# Método responsável pela ordem do array movimentos
 def ord_movements(m):
     return m.id
 
-
+# Route para a página dos movimentos
 @app.route("/account/movements")
 def movements():
     balance, balances, symbol, notifications = pre_requisits()
@@ -587,7 +570,7 @@ def movements():
 
     return render_template('movements.html', title='Movemets', movements=movements, currencies=currencies, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
-
+# Route para a página dos utilizadores
 @app.route("/users")
 @login_required
 def users():
@@ -602,9 +585,11 @@ def users():
 
     return render_template('users.html', title='Users', users=users, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
+# Método resposável pela ordem dos elementos do array eventos
 def ord_events(e):
     return e.start_date
 
+# Route para a página de gestão de eventos
 @app.route("/allEvents", methods=['GET', 'POST'])
 @login_required
 def events():
@@ -618,7 +603,7 @@ def events():
 
     return render_template('allEvents.html', title='AllEvents', events=events, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
-
+# Route responsável por mudar o estado de um evento
 @app.route("/allEvents/event/<event_id>/<status>")
 @login_required
 def event(event_id, status):
@@ -740,6 +725,7 @@ def event(event_id, status):
 
         return redirect(url_for('events'))
 
+# Route para a página de notificações
 @app.route("/account/notifications")
 @login_required
 def notifications():
@@ -749,6 +735,7 @@ def notifications():
 
     return render_template('notifications.html', notif=notif, balance=balance, symbol=symbol, balances=balances, notifications=notifications)
 
+# Route para remover uma notificação
 @app.route("/account/notifications/delete/<not_id>")
 @login_required
 def notification_delete(not_id):
