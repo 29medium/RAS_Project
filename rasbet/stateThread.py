@@ -3,7 +3,7 @@ from rasbet.models import *
 from rasbet import db
 from datetime import datetime
 
-
+# função que atualiza estados dos eventos
 def stateChanger():
     events = Event.query.all()
     for e in events:

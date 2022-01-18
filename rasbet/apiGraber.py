@@ -4,6 +4,8 @@ from rasbet import db, bcrypt
 from datetime import datetime, timedelta
 import time
 
+# script que atualiza desportos,competições, intervenientes e eventos na base de dados
+# executada aquando da inicialização da app
 def loadApi():
     f = open('rasbet/files/API.json','r')
     data = json.load(f)
@@ -97,7 +99,7 @@ def loadApi():
                     
     db.session.commit()
     
-
+# script que atualiza as currency's através de um ficheiro json
 def loadCurr():
     f = open('rasbet/files/Currency.json','r')
     data = json.load(f)
@@ -111,7 +113,7 @@ def loadCurr():
                     
     db.session.commit()
 
-
+# script que atualiza tudo que tenha a haver com eventos
 def loadApiWorker():
     f = open('rasbet/files/API.json','r')
     data = json.load(f)
@@ -185,13 +187,15 @@ def loadApiWorker():
                 else:
                     t.value=evento['odds'][2]
     db.session.commit()
-    
+
+# função executada por uma thread para atualizar constantemente os dados
 def worker():
     while True:
         time.sleep(10)
         loadApiWorker()
         loadCurr()
     
+# função que é executada aquando da inicialização da app
 def loadAllApi():
     loadApi()
     loadCurr()

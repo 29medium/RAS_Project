@@ -7,6 +7,10 @@ from rasbet.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 import json
 
+## ficheiro de routes
+## especificado os caminhos a que um utilizador logado(ou não) pode aceder
+
+
 def pre_requisits():
     balance = None
     balances = {}

@@ -15,7 +15,7 @@ def currencyList():
         choices.append((c.id, c.name + " (" + c.symbol + ")"))
 
     return choices
-
+# Formulário de registo
 class RegistrationForm(FlaskForm):
     username = StringField('Nome de Utilizador', validators=[DataRequired(), Length(min=2, max=20)])
     name = StringField('Nome Completo', validators=[DataRequired()])
@@ -57,12 +57,14 @@ class RegistrationForm(FlaskForm):
         if birth_date.data > max_date.date():
             raise ValidationError('Tem de ser maior de idade')
 
+# formulário de login
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Lembrar')
     submit = SubmitField('Login')
 
+# formulário de update de conta
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     name = StringField('Nome Completo', validators=[DataRequired()])
@@ -106,6 +108,7 @@ class UpdateAccountForm(FlaskForm):
         if birth_date.data > max_date.date():
             raise ValidationError('Tem de ser maior de idade')
 
+# formulario de depositar dinheiro
 class DepositForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
     currency_id = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
@@ -120,6 +123,7 @@ class DepositForm(FlaskForm):
             if value.data < min:
                 raise ValidationError(f'O depósito minimo é {min} {Currency.query.filter_by(id=self.currency_id.data).first().name}')
 
+# formulário de levantar dinheiro
 class CashOutForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
     currency_id = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
@@ -132,6 +136,7 @@ class CashOutForm(FlaskForm):
         elif value.data > Wallet.query.filter_by(user_id=current_user.id, currency_id=self.currency_id.data).first().balance:
             raise ValidationError(f'Quantia indisponível na carteira')
 
+# formulário de conversão de moeda
 class ConvertForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
     currency_id_out = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
@@ -147,6 +152,7 @@ class ConvertForm(FlaskForm):
         elif self.currency_id_in.data == self.currency_id_out.data:
             raise ValidationError(f'A conversão tem de ser feita com duas moedas diferentes')
 
+# formulário de aposta
 class BetForm(FlaskForm):
     value = FloatField('Valor', validators=[DataRequired()])
     currency_id = SelectField(u'Moeda', choices=currencyList(), validators=[DataRequired()])
